@@ -2,8 +2,8 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
+from django.utils import timezone
 
 
 class CommonInfo(models.Model):
@@ -123,6 +123,7 @@ class Attendance(models.Model):
     dateattend = models.DateField(auto_now_add=True)
     present_status = models.CharField(max_length=10, choices=Present)
     absentwhy = models.CharField(max_length=200, null=True, blank=True)
+    todaydate = models.DateField(default=timezone.now, null=True, blank=True)
     year = models.CharField(
         max_length=4, default=str(date.today().year), blank=True, null=True
     )
@@ -132,6 +133,7 @@ class Attendance(models.Model):
 
     class Meta:
         ordering = ["id"]
+        unique_together = ("student", "todaydate")
 
     objects = models.Manager()
     attend = AttendManager()

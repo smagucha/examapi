@@ -1,6 +1,7 @@
 from .serializers import StudentSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.urls import reverse
 from rest_framework.decorators import api_view
 from .models import Student, Stream, Klass, Attendance
 from .serializers import (
@@ -9,6 +10,7 @@ from .serializers import (
     KlassSerializer,
     AttendanceSerializer,
 )
+from datetime import date, datetime
 
 
 @api_view(["POST"])
@@ -40,14 +42,14 @@ def class_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == "PUT":
-        serializer = KlassSerializer(stream, data=request.data)
+        serializer = KlassSerializer(klass, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
-        stream.delete()
+        klass.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -128,7 +130,6 @@ def student_detail(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == "DELETE":
         student.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -140,7 +141,6 @@ def student_class(request, name, stream=None):
         name=name, stream=stream
     )
     serializer = StudentSerializer(students, many=True)
-
     context = {
         "title": "class students",
         "student": serializer.data,
@@ -155,54 +155,65 @@ def student_class(request, name, stream=None):
 
 
 @api_view(["GET", "POST"])
-def take_attendance(request, name, stream=None):
-    students = Student.student.get_student_list_class_or_stream(name, stream)
-
+def take_attendance(request):
     if request.method == "POST":
-        # Expecting a list of attendance records in request.data
-        # Example JSON: [{"student_id": 1, "present_status": "P", "reason": ""}, ...]
-        attendance_records = request.data
+        selected_class = request.data.get("selected_class")
+        selected_stream = request.data.get("selected_stream")
+        if selected_stream:
+            redirect_url = reverse(
+                "record_attendance_stream",
+                kwargs={"name": selected_class, "stream": selected_stream},
+            )
+        else:
+            redirect_url = reverse("record_attendance", kwargs={"name": selected_class})
+        return Response(redirect_url)
 
+    data = {
+        "classes": [str(c) for c in Klass.objects.all()],
+        "streams": [str(s) for s in Stream.objects.all()],
+    }
+    return Response(data)
+
+
+@api_view(["GET", "POST"])
+def record_attendance(request, name, stream=None):
+    students = Student.student.get_student_list_class_or_stream(name, stream)
+    if request.method == "POST":
+        attendance_records = request.data
         created_count = 0
         for data in attendance_records:
-            # Map student from your list or fetch if needed
             student = next((s for s in students if s.id == data["student_id"]), None)
-
             if student:
                 Attendance.objects.create(
-                    class_name_id=student.class_name.id,
-                    student_id=student.id,
+                    class_name=student.class_name,
+                    student=student,
                     present_status=data.get("present_status"),
                     absentwhy=data.get("reason", ""),
-                    stream=student.stream,
+                    stream=student.stream if student.stream else None,
                 )
-                created_count += 1
-        print(created_count)
-
+            created_count += 1
         return Response(
             {"message": f"Successfully recorded {created_count} attendance entries."},
             status=status.HTTP_201_CREATED,
         )
+    # GET request
     student_data = [
-        {"id": s.student_id, "name": s.class_name, "stream": s.stream} for s in students
-    ]
-    return Response(student_data)
-
-
-@api_view(["GET"])
-def view_attendance_per_stream_or_class(request, name, stream=None):
-    attend_queryset = Attendance.attend.get_student_list_stream(
-        name=name, stream=stream
-    )
-    serializer = AttendanceSerializer(attend_queryset, many=True)
-    return Response(
         {
-            "title": "View Attendance",
-            "stream": stream,
-            "class": name,
-            "attend": serializer.data,
+            "student_id": s.id,
+            "full_name": s.first_name,
+            "class_name_id": s.class_name.id,
+            "class_name": s.class_name.name if s.class_name else None,
+            "stream_name": s.stream.name if s.stream else None,
+            "stream_id": s.stream.id if s.stream else None,
         }
-    )
+        for s in students
+    ]
+    if student_data:
+        return Response(student_data)
+    else:
+        return Response(
+            "No student to take attendance", status=status.HTTP_404_NOT_FOUND
+        )
 
 
 @api_view(["GET", "PUT", "DELETE"])
@@ -231,10 +242,51 @@ def attendance_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(["POST"])
-def add_attend(request):
+@api_view(["GET", "POST"])
+def viewattendance(request):
     if request.method == "POST":
-        serializer = AttendanceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        selected_class = request.data.get("selected_class")
+        selected_stream = request.data.get("selected_stream")
+        if selected_stream:
+            return Response(
+                {
+                    "redirect_url": reverse(
+                        "viewattendanceperstream",
+                        kwargs={"name": selected_class, "stream": selected_stream},
+                    )
+                }
+            )
+        else:
+            return Response(
+                {
+                    "redirect_url": reverse(
+                        "viewattendanceperclass", kwargs={"name": selected_class}
+                    )
+                }
+            )
+        # return Response(redirect_url)
+    data = {
+        "classes": [str(c) for c in Klass.objects.all()],
+        "streams": [str(s) for s in Stream.objects.all()],
+    }
+    return Response(data)
+
+
+@api_view(["GET"])
+def viewattendanceperstream(request, name, stream=None):
+    current_month = datetime.now().month
+    attend = Attendance.attend.get_student_list_stream(name=name, stream=stream)
+    serializer = AttendanceSerializer(attend, many=True)
+    data = [
+        {
+            "first name": s.student.first_name,
+            "last name": s.student.last_name,
+            "class_name": s.class_name.name,
+            "stream_name": s.stream.name if s.stream else None,
+            "present_status": s.present_status,
+            "absent_status": s.absentwhy,
+            "todaydate": s.todaydate,
+        }
+        for s in attend
+    ]
+    return Response(data)

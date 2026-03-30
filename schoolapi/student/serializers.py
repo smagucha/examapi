@@ -24,3 +24,12 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = "__all__"
+
+    def validate(self, data):
+        student = data.get("student")
+        date = data.get("date", timezone.now().date())
+        if Attendance.objects.filter(student=student, date=date).exists():
+            raise serializers.ValidationError(
+                "Attendance for this student has already been recorded today."
+            )
+        return data

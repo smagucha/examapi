@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "student",
     "teacher",
     "events",
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -73,11 +75,37 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "schoolapi.wsgi.application"
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+# Allow credentials (if using cookies/sessions)
+CORS_ALLOW_CREDENTIALS = True
 
-
+# Allow specific methods
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

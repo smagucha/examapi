@@ -13,14 +13,30 @@ urlpatterns = [
     path("add_class/", views.add_class),
     path("all_classes/", views.all_class),
     path("class_detail/<int:pk>/", views.class_detail),
-    path("take_attendance/<str:name>/<str:stream>/", views.take_attendance),
+    path("attendance_detail/<int:pk>/", views.attendance_detail),
+    path(
+        "takeattendance/",
+        views.take_attendance,
+    ),
+    path(
+        "take_attendance/<str:name>/",
+        views.record_attendance,
+        name="record_attendance",
+    ),
+    path(
+        "take_attendance_for_stream/<str:name>/<str:stream>/",
+        views.record_attendance,
+        name="record_attendance_stream",
+    ),
+    path("viewattendance/", views.viewattendance),
     path(
         "viewattendanceperstream/<str:name>/<str:stream>/",
-        views.view_attendance_per_stream_or_class,
+        views.viewattendanceperstream,
+        name="viewattendanceperstream",
     ),
     path(
         "viewattendanceperclass/<str:name>/",
-        views.view_attendance_per_stream_or_class,
+        views.viewattendanceperstream,
+        name="viewattendanceperclass",
     ),
-    path("attendance_detail/<int:pk>/", views.attendance_detail),
 ]

@@ -1,0 +1,233 @@
+/* Container */
+.attendance-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px 20px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Card */
+.attendance-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Header */
+.attendance-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.attendance-title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.attendance-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: 0;
+}
+
+/* Table */
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.attendance-table th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+  color: #333;
+}
+
+.attendance-table tr:hover {
+  background-color: #f0f4ff;
+  transition: background-color 0.2s ease;
+}
+
+/* Select box */
+.status-select {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #fefefe; /* light background */
+  color: #333; /* dark text for visibility */
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none; /* removes default arrow in some browsers */
+}
+
+.status-select:hover {
+  border-color: #667eea;
+}
+
+.status-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* Option styling (for visibility) */
+.status-select option {
+  color: #333; /* dark text */
+  background-color: #fff; /* white background */
+}
+
+/* Optional: add a custom arrow for modern look */
+.status-select::-ms-expand {
+  display: none;
+}
+
+/* Reason Input */
+.reason-input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.reason-input:hover {
+  border-color: #667eea;
+}
+
+.reason-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* No reason placeholder */
+.no-reason {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Submit Button */
+.attendance-submit {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  width: 100%;
+}
+
+.attendance-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.attendance-submit:disabled,
+.attendance-submit.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Success & Error Messages */
+.attendance-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #c3e6cb;
+}
+
+.attendance-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Loading */
+.attendance-loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.attendance-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.attendance-loading-text {
+  color: #333;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .attendance-card {
+    padding: 20px;
+  }
+
+  .attendance-title {
+    font-size: 24px;
+  }
+
+  .status-select,
+  .reason-input {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .attendance-card {
+    padding: 15px;
+  }
+
+  .attendance-title {
+    font-size: 22px;
+  }
+
+  .attendance-submit {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+}
