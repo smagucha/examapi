@@ -41,12 +41,12 @@ urlpatterns = [
     path("enroll_student_to_subject_all/", views.enroll_student_to_subject_all),
     path("enter_result_for_stream_or_class/", views.enter_result_for_stream_or_class),
     path(
-        "enterexam/<str:name>/<str:stream>/<str:term_id>/<str:subject_id>/",
+        "enterexam/<str:name>/<str:stream>/<str:term>/<str:Subject>/",
         views.enter_result,
-        name="enterexam",
+        name="enterexamforstream",
     ),
     path(
-        "enterexamforclass/<str:name>/<str:term_id>/<str:subject_id>/",
+        "enterexamforclass/<str:name>/<str:term>/<str:Subject>/",
         views.enter_result,
         name="enterexamforclass",
     ),
@@ -56,7 +56,7 @@ urlpatterns = [
         name="classubjectranking",
     ),
     path(
-        "subjectperrankclass/<str:name>/<str:term>/<str:subject>/",
+        "subjectperrankclass/<str:name>/<str:Term>/<str:Subject>/",
         views.subjectperrank,
         name="subjectperrankclass",
     ),
@@ -82,4 +82,5 @@ urlpatterns = [
         views.class_stream_subject_ranking,
         name="subjectrankingstream",
     ),
+    path("allsubjects", views.get_subjects),
 ]

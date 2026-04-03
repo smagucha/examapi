@@ -48,7 +48,7 @@ function ViewAttendance() {
     setTimeout(() => {
       if (formData.stream) {
         navigate(
-          `/viewattendanceperstream/${formData.class}/${formData.stream}/`
+          `/viewattendanceperclass/${formData.class}/${formData.stream}/`
         );
       } else {
         navigate(`/viewattendanceperclass/${formData.class}/`);

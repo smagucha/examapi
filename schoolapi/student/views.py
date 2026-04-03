@@ -56,18 +56,17 @@ def class_detail(request, pk):
 @api_view(["POST"])
 def add_stream(request):
     if request.method == "POST":
-        serializer_class = StreamSerializer(data=request.data)
-        if serializer_class.is_valid():
-            serializer_class.save()
-            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+        serializer = StreamSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["GET"])
 def stream_list(request):
-    if request.method == "GET":
-        stream = Stream.objects.all()
-        serializer = StreamSerializer(stream, many=True)
-        return Response(serializer.data)
+    stream = Stream.objects.all()
+    serializer = StreamSerializer(stream, many=True)
+    return Response(serializer.data)
 
 
 @api_view(["GET", "PUT", "DELETE"])

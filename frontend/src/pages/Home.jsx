@@ -28,13 +28,11 @@ export default function Home() {
     { title: "Subject Ranking", icon: <FaChartBar />, path: "/subject-ranking" },
     { title: "Results Per Class", icon: <FaFileAlt />, path: "/results-per-class" },
     { title: "Class Ranking", icon: <FaTrophy />, path: "/class-ranking" },
-    { title: "Setting", icon: <FaCog />, path: "/setting" },
+    { title: "Setting", icon: <FaCog />, path: "/settings" },
   ];
-
   return (
     
     <div className="home-container">
-      <h1 className="home-title">Welcome to My Website</h1>
 
       <div className="card-grid">
         {cards.map((card, index) => (
