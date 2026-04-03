@@ -233,15 +233,24 @@ def select_class_subject_enrolled(request):
         selected_class = request.data.get("selected_class")
         selected_stream = request.data.get("selected_stream")
         selected_subject = request.data.get("selected_subject")
-        redirect_url = reverse(
-            "studentenrolledsubjects",
-            kwargs={
-                "name": selected_class,
-                "stream": selected_stream,
-                "subject": selected_subject,
-            },
-        )
-
+        if selected_stream:
+            redirect_url = reverse(
+                "studentenrolledsubjects",
+                kwargs={
+                    "name": selected_class,
+                    "stream": selected_stream,
+                    "subject": selected_subject,
+                },
+            )
+        else:
+            redirect_url = reverse(
+                "studentenrolledsubjectsclass",
+                kwargs={
+                    "name": selected_class,
+                    "subject": selected_subject,
+                },
+            )
+        # /result/studentenrolledsubjects/one/red/math/"
         return Response({"redirect_url": redirect_url})
     data = {
         "classes": [str(c) for c in get_class()],
@@ -259,14 +268,19 @@ def subjects_enrolled_by_student(request, name, subject, stream=None):
     )
     if stream:
         queryset = queryset.filter(stream__name=stream)
-    serializer = EnrollStudenttosubectserializer(queryset, many=True)
     return Response(
         {
-            "class": name,
-            "subject": subject,
-            "stream": stream,
-            "count": queryset.count(),
-            "enrolled_students": serializer.data,
+            "enrolled_students": [
+                {
+                    "student_name": student.student.full_name,
+                    "subject": student.subject.name,  # Add .name here
+                    "class_name": student.class_name.name,  # Add .name here
+                    "stream": student.stream.name
+                    if student.stream
+                    else None,  # Handle optional stream
+                }
+                for student in queryset
+            ]
         }
     )
 

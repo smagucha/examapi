@@ -93,6 +93,13 @@ class Student(models.Model):
     objects = models.Manager()
     student = StudentManager()
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.middle_name} {self.last_name}".strip()
+
+    def __str__(self):
+        return self.full_name
+
 
 class AttendManager(models.Manager):
     def get_student_list_stream(self, name, stream=None):

@@ -22,7 +22,10 @@ import Settings from "./pages/Settings";
 import ListTerm from "./pages/ListTerm";
 import AddTerm from "./pages/AddTerm";
 import UpdateTerm from "./pages/UpdateTerm";
-import ListClass from "./pages/ListClasses"
+import ListClass from "./pages/ListClasses";
+import UpdateClass from "./pages/UpdateClass";
+import SelectClassSubjectEnrolled from "./pages/SelectClassSubjectEnrolled";
+import SubjectsEnrolledByStudent from "./pages/SubjectsEnrolledByStudent";
 function App() {
   return (
     <BrowserRouter>
@@ -36,11 +39,18 @@ function App() {
         <Route path="/parents" element={<Parent/>} />
         <Route path="/teachers" element={<h1>Teachers Page</h1>} />
         <Route path="/events"  element={<EventList/>} />
+        <Route path="/result/studentenrolledsubjectsclass/:name/:subject/" element={<SubjectsEnrolledByStudent />} />
+        <Route
+          path="/result/studentenrolledsubjects/:name/:stream/:subject/"
+          element={<SubjectsEnrolledByStudent />}
+        />
         <Route path="/addstream" element={<AddStream />} />
         <Route path="/addevent" element ={<AddEvent/>}/>
         <Route path="/addgrade" element ={<AddGrade/>}/>
         <Route path="/listterm" element ={<ListTerm/>}/>
         <Route path='/updateterm/:pk' element={<UpdateTerm/>} />
+        <Route path='/updateclass/:pk' element={<UpdateClass/>} />
+         <Route path="/select-class-subject-enrolled" element={<SelectClassSubjectEnrolled />}/>
         <Route path="/streamupdate/:pk" element={<UpdateStream/>}/>
         <Route path="/updategrade/:pk" element={<UpdateGrade/>}/>
         <Route path="/gradelist" element ={<GradeList/>}/>

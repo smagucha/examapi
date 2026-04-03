@@ -16,10 +16,6 @@ urlpatterns = [
         views.enroll_students_to_student,
     ),
     path(
-        "subjects_enrolled_by_student/<str:name>/<str:subject>/<str:stream>/",
-        views.subjects_enrolled_by_student,
-    ),
-    path(
         "subjects_enrolled_by_student/<str:name>/<str:subject>/",
         views.subjects_enrolled_by_student,
     ),
@@ -35,8 +31,9 @@ urlpatterns = [
         name="studentenrolledsubjects",
     ),
     path(
-        "studentenrolledsubjects/<str:name>/<str:subject>/",
+        "studentenrolledsubjectsclass/<str:name>/<str:subject>/",
         views.subjects_enrolled_by_student,
+        name="studentenrolledsubjectsclass",
     ),
     path("enroll_student_to_subject_all/", views.enroll_student_to_subject_all),
     path("enter_result_for_stream_or_class/", views.enter_result_for_stream_or_class),

@@ -22,7 +22,7 @@ export default function Settings() {
     { title: "streams", icon: <FaChalkboardTeacher />, path: "/liststream" },
     { title: "terms", icon: <FaClipboardCheck />, path: "/listterm" },
     { title: "enroll student to subjects", icon: <FaEye />, path: "/view-attendance" },
-    { title: "subjects enrolled by student", icon: <FaPenFancy />, path: "/enter-result" },
+    { title: "subjects enrolled by student", icon: <FaPenFancy />, path: "/select-class-subject-enrolled" },
     { title: "classes", icon: <FaEdit />, path: "/listclass" },
     { title: "users", icon:<FaUsers/>, path:"/gradelist"},
   ];

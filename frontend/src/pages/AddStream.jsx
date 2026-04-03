@@ -20,7 +20,7 @@ function AddClass(){
             <form onSubmit={handleSubmit}>
                 <input 
                     type="text" placeholder="name" 
-                    onChange={(e) => setNewClass({...newclass, name: e.target.value})} 
+                    onChange={(e) => setNewClass({...newClass, name: e.target.value})} 
                     required 
                 />
                 <button type="submit" style={{ backgroundColor: 'green', color: 'white' }}>
