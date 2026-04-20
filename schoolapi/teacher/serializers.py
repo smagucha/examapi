@@ -14,7 +14,7 @@ class Teacherserializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class subjectserializer(serializers.ModelSerializer):
+class Teachersubjectserializer(serializers.ModelSerializer):
     class Meta:
         model = Teachersubjects
         fields = "__all__"

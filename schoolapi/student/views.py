@@ -5,12 +5,13 @@ from django.urls import reverse
 from rest_framework.decorators import api_view
 from .models import Student, Stream, Klass, Attendance
 from .serializers import (
-    StudentSerializer,
     StreamSerializer,
     KlassSerializer,
     AttendanceSerializer,
+    StudentSerializer,
 )
 from datetime import date, datetime
+from django.contrib.auth.models import User
 
 
 @api_view(["POST"])
@@ -199,7 +200,7 @@ def record_attendance(request, name, stream=None):
     student_data = [
         {
             "student_id": s.id,
-            "full_name": s.first_name,
+            "full_name": s.full_name,
             "class_name_id": s.class_name.id,
             "class_name": s.class_name.name if s.class_name else None,
             "stream_name": s.stream.name if s.stream else None,
@@ -289,3 +290,42 @@ def viewattendanceperstream(request, name, stream=None):
         for s in attend
     ]
     return Response(data)
+
+
+@api_view(["GET"])
+def get_all_parents(request):
+    parents_with_students = Student.student.get_student_list()
+    context = [
+        {
+            "full_name": parents.parent,
+            "phone_number": parents.parent_phone_number,
+            "student": parents.full_name,
+            "student_class": parents.class_name.name,
+        }
+        for parents in parents_with_students
+    ]
+    return Response(context)
+
+
+@api_view(["GET"])
+def student_class(
+    request,
+    name,
+    stream=None,
+):
+    students = Student.student.get_student_list_class_or_stream(
+        name=name, stream=stream
+    )
+    context = [
+        {
+            "id": student.id,
+            "full_name": student.full_name,
+            "Adimision_number": student.Admin_no,
+            "date_of_birth": student.date_of_birth,
+            "Class": str(student.class_name),
+            "stream": str(student.stream),
+            "gender": student.gender,
+        }
+        for student in students
+    ]
+    return Response(context)

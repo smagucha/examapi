@@ -19,10 +19,16 @@ urlpatterns = [
         "subjects_enrolled_by_student/<str:name>/<str:subject>/",
         views.subjects_enrolled_by_student,
     ),
+    path("select_result_to_update/", views.select_result_to_update),
     path(
         "enrollstudentstosubject/<str:name>/<str:stream>/",
         views.enroll_students_to_subject,
         name="enrollstudentstosubject",
+    ),
+    path(
+        "enrollstudentstosubjectclass/<str:name>/",
+        views.enroll_students_to_subject,
+        name="enrollstudentstosubjectclass",
     ),
     path("select_class_subject_enrolled/", views.select_class_subject_enrolled),
     path(
@@ -38,12 +44,12 @@ urlpatterns = [
     path("enroll_student_to_subject_all/", views.enroll_student_to_subject_all),
     path("enter_result_for_stream_or_class/", views.enter_result_for_stream_or_class),
     path(
-        "enterexam/<str:name>/<str:stream>/<str:term>/<str:Subject>/",
+        "enterexam/<str:name>/<str:stream>/<str:Term>/<str:Subject>/",
         views.enter_result,
         name="enterexamforstream",
     ),
     path(
-        "enterexamforclass/<str:name>/<str:term>/<str:Subject>/",
+        "enterexamforclass/<str:name>/<str:Term>/<str:Subject>/",
         views.enter_result,
         name="enterexamforclass",
     ),
@@ -53,7 +59,7 @@ urlpatterns = [
         name="classubjectranking",
     ),
     path(
-        "subjectperrankclass/<str:name>/<str:Term>/<str:Subject>/",
+        "subjectperrankclass/<str:name>/<str:term>/<str:subject>/",
         views.subjectperrank,
         name="subjectperrankclass",
     ),
@@ -63,6 +69,35 @@ urlpatterns = [
         name="subjectperrankstreamterm",
     ),
     path("resultforstreamandclass/", views.result_for_stream_and_class),
+    # path(
+    #     "resultperclassterm/<str:name>/<str:term>/",
+    #     views.getresultstreamterm,
+    #     name="resultperterm",
+    # ),
+    # path(
+    #     "resultstreamterm/<str:name>/<str:stream>/<str:term>/",
+    #     views.getresultstreamterm,
+    #     name="resultstreamterm",
+    # ),
+    path("selectstreamforsubjectranking/", views.select_stream_for_subject_ranking),
+    path(
+        "subjectrankingstream/<str:class_name>/<str:term>/<str:subject>/",
+        views.class_stream_subject_ranking,
+        name="subjectrankingstream",
+    ),
+    path("allsubjects", views.get_subjects),
+    path(
+        "subject_results_classtream/<str:class_name>/<str:term>/<str:subject>/<str:stream>/",
+        views.subject_results_class,
+        name="sujectresults",
+    ),
+    path(
+        "subject_results_class/<str:class_name>/<str:term>/<str:subject>/",
+        views.subject_results_class,
+        name="sujectresultsclass",
+    ),
+    path("update_result/<int:pk>/", views.update_result),
+    path("selectstreamorclassforresult/", views.result_stream_or_term),
     path(
         "resultperclassterm/<str:name>/<str:term>/",
         views.getresultstreamterm,
@@ -73,11 +108,4 @@ urlpatterns = [
         views.getresultstreamterm,
         name="resultstreamterm",
     ),
-    path("selectstreamforsubjectranking/", views.select_stream_for_subject_ranking),
-    path(
-        "subjectrankingstream/<str:class_name>/<str:term>/<str:subject>/",
-        views.class_stream_subject_ranking,
-        name="subjectrankingstream",
-    ),
-    path("allsubjects", views.get_subjects),
 ]

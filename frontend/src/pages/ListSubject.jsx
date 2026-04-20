@@ -93,5 +93,4 @@ function SubjectsList() {
         </div>
     );
 }
-
 export default SubjectsList;

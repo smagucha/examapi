@@ -4,6 +4,9 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.shortcuts import redirect
+from django.db import transaction
+import logging
+from django.contrib.auth.models import User
 from student.models import Stream, Klass
 from .models import term, subject, Mark, Grading, EnrollStudenttosubect
 from .serializers import (
@@ -75,6 +78,7 @@ def detail_subject(request, pk):
         return Response(serializer.data)
     elif request.method == "PUT":
         serializer = Subjectserializer(subjects, data=request.data)
+        print(serializer.is_valid())
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -186,45 +190,117 @@ def enroll_students_to_student(request):
     return Response(data)
 
 
+logger = logging.getLogger(__name__)
+
+
 @api_view(["GET", "POST"])
 def enroll_students_to_subject(request, name, stream=None):
-    students = get_students_by_class_and_stream(name, stream)
-    subjects_list = all_subjects()
+    """
+    Enroll students to subjects or get available students and subjects.
 
-    if request.method == "POST":
-        # Check if request.data is a list (based on your input example)
-        enrollment_data_list = request.data
+    GET: Returns list of students in the class/stream and all available subjects
+    POST: Expects a list of enrollment dictionaries
+    """
 
+    if request.method == "GET":
+        students = get_students_by_class_and_stream(name, stream)
+
+        subjects_list = all_subjects()
+
+        data = {
+            "students": [{"id": s.id, "name": str(s)} for s in students],
+            "subjects": [{"id": sub.id, "name": sub.name} for sub in subjects_list],
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    # POST method
+    enrollment_data_list = request.data
+
+    # Input validation
+    if not isinstance(enrollment_data_list, list):
+        return Response(
+            {"error": "Expected a list of enrollment objects"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if not enrollment_data_list:
+        return Response(
+            {"error": "Enrollment list cannot be empty"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Get class and stream objects once
+    try:
         klass_obj = get_object_or_404(Klass, name=name)
         stream_obj = get_object_or_404(Stream, name=stream) if stream else None
-        enrollment_count = 0
+    except Exception as e:
+        return Response(
+            {"error": f"Invalid class or stream: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-        # Iterate through the list of dictionaries sent in the request
-        for entry in enrollment_data_list:
+    successful_enrollments = []
+    failed_enrollments = []
+
+    # Use transaction to ensure data integrity
+    with transaction.atomic():
+        for idx, entry in enumerate(enrollment_data_list):
             try:
-                # Use entry.get() because each item in your list is a dict
-                EnrollStudenttosubect.objects.create(
-                    student_id=entry.get("student_id"),
-                    subject_id=entry.get("subject_id"),
+                # Validate required fields
+                student_id = entry.get("student_id")
+                subject_id = entry.get("subject_id")
+
+                if not student_id or not subject_id:
+                    failed_enrollments.append(
+                        {
+                            "index": idx,
+                            "error": "Missing student_id or subject_id",
+                            "data": entry,
+                        }
+                    )
+                    continue
+
+                # Create enrollment
+                enrollment = EnrollStudenttosubect.objects.create(
+                    student_id=student_id,
+                    subject_id=subject_id,
                     class_name_id=klass_obj.id,
                     stream_id=stream_obj.id if stream_obj else None,
                 )
-                enrollment_count += 1
-            except Exception as e:
-                # Log error or skip bad entries
-                continue
+                successful_enrollments.append(
+                    {
+                        "id": enrollment.id,
+                        "student_id": student_id,
+                        "subject_id": subject_id,
+                    }
+                )
 
-        return Response(
-            {"message": f"Successfully enrolled {enrollment_count} students."},
-            status=status.HTTP_201_CREATED,
-        )
-        # [{"student_id":2,"subject_id":3,"class_name_id":1, "stream_id":1},{"student_id":2,"subject_id":3,"class_name_id":1, "stream_id":1}]
-    # GET logic remains the same
-    data = {
-        "students": [{"id": s.id, "name": str(s)} for s in students],
-        "subjects": [{"id": sub.id, "name": sub.name} for sub in subjects_list],
+            except Exception as e:
+                logger.error(f"Enrollment failed for entry {idx}: {str(e)}")
+                failed_enrollments.append(
+                    {"index": idx, "error": str(e), "data": entry}
+                )
+
+    # Prepare response
+    response_data = {
+        "message": f"Successfully enrolled {len(successful_enrollments)} out of {len(enrollment_data_list)} students.",
+        "successful_enrollments": successful_enrollments,
+        "failed_enrollments": failed_enrollments,
     }
-    return Response(data, status=status.HTTP_200_OK)
+
+    if failed_enrollments:
+        response_data[
+            "warning"
+        ] = "Some enrollments failed. Check failed_enrollments for details."
+        return Response(response_data, status=status.HTTP_207_MULTI_STATUS)
+
+    return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+# [
+#   {"student_id": 2, "subject_id": 3},
+#   {"student_id": 2, "subject_id": 3}
+# ]
 
 
 @api_view(["GET", "POST"])
@@ -325,7 +401,7 @@ def class_subject_ranking(request):
         "classes": [str(c) for c in get_class()],
         "subjects": [str(s) for s in all_subjects()],
         "terms": [str(t) for t in all_terms()],
-        "stream": [str(s) for s in get_stream()],
+        "streams": [str(s) for s in get_stream()],
     }
     return Response(data)
 
@@ -335,13 +411,16 @@ def subjectperrank(request, name, term, subject, stream=None):
     rankings_data = Mark.mark.student_subject_ranking_per_class_or_stream(
         name, term, subject, stream
     )
-    data = {
-        "name": name,
-        "term": term,
-        "stream": stream,
-        "subject": subject,
-        "rankings_data": rankings_data,
-    }
+    data = [
+        {
+            "student": marks.student.full_name,
+            "term": str(marks.Term),
+            "subject": str(marks.name),
+            "stream": str(marks.student.stream),
+            "marks": str(marks.marks),
+        }
+        for marks in rankings_data
+    ]
     return Response(data)
 
 
@@ -483,7 +562,7 @@ def enter_result_for_stream_or_class(request):
         "classes": [str(c) for c in get_class()],
         "terms": [str(t) for t in all_terms()],
         "subjects": [str(s) for s in all_subjects()],
-        "stream": [str(s) for s in get_stream()],
+        "streams": [str(s) for s in get_stream()],
     }
     return Response(data)
 
@@ -495,7 +574,6 @@ def enter_result(request, name, Term, Subject, stream=None):
     )
     termid = term.objects.get(name=Term).id
     subjectid = subject.objects.get(name=Subject).id
-
     if request.method == "POST":
         getmarks = (
             request.data.getlist("subjectname")
@@ -517,22 +595,15 @@ def enter_result(request, name, Term, Subject, stream=None):
         return Response(
             {"message": "Marks created successfully"}, status=status.HTTP_201_CREATED
         )
+    context = [
+        {
+            "student_id": student.student.id,
+            "student_name": str(student.student),
+            # Add other student fields as needed
+        }
+        for student in exam
+    ]
 
-    # GET request - return data as JSON
-    context = {
-        "exam": [
-            {
-                "student_id": student.student.id,
-                "student_name": str(student.student),
-                # Add other student fields as needed
-            }
-            for student in exam
-        ],
-        "name": name,
-        "stream": stream,
-        "term": Term,
-        "subject": Subject,
-    }
     return Response(context, status=status.HTTP_200_OK)
 
 
@@ -542,3 +613,131 @@ def get_subjects(request):
         Subject = subject.objects.all()
         serializer = Subjectserializer(Subject, many=True)
         return Response(serializer.data)
+
+
+@api_view(["GET", "POST"])
+def select_result_to_update(request):
+    if request.method == "POST":
+        selected_term = request.data.get("selected_term")
+        selected_class = request.data.get("selected_class")
+        selected_subject = request.data.get("selected_subject")
+        selected_stream = request.data.get("selected_stream")
+        if selected_stream:
+            redirect_url = reverse(
+                "sujectresults",
+                kwargs={
+                    "class_name": selected_class,
+                    "term": selected_term,
+                    " subject": selected_subject,
+                    "stream": selected_stream,
+                },
+            )
+        else:
+            redirect_url = reverse(
+                "sujectresultsclass",
+                kwargs={
+                    "class_name": selected_class,
+                    "term": selected_term,
+                    " subject": selected_subject,
+                    "stream": selected_stream,
+                },
+            )
+        return Response(redirect_url)
+
+    data = {
+        "classes": [str(c) for c in get_class()],
+        "terms": [str(t) for t in all_terms()],
+        "subjects": [str(s) for s in all_subjects()],
+        "streams": [str(s) for s in get_stream()],
+    }
+    return Response(data)
+
+
+@api_view(["GET"])
+def subject_results_class(request, class_name, term, subject, stream=None):
+    subject_results = Mark.mark.get_subject_marks_for_class_or_stream_marks(
+        student_class_name=class_name,
+        Term=term,
+        subject_name=subject,
+        stream=stream,
+    )
+    context = [
+        {
+            "id": student.id,
+            "student_name": student.student.full_name,
+            "subject": subject,
+            "marks": student.marks,
+            "term": term,
+            "stream": str(student.student.stream),
+        }
+        for student in subject_results
+    ]
+    print(class_name, term, subject, stream)
+    return Response(context)
+
+
+@api_view(["GET", "PUT"])
+def update_result(request, pk):
+    try:
+        Mark_obj = Mark.objects.get(pk=pk)
+    except Mark.DoesNotExist:
+        return Response({"error": "result not found"}, status=status.HTTP_404_NOT_FOUND)
+    result = get_object_or_404(Mark, pk=pk)
+    if request.method == "GET":
+        serializer = MarkSerializer(Mark_obj)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = MarkSerializer(result, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "result updated successfully", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+
+
+@api_view(["GET", "POST"])
+def result_stream_or_term(request):
+    if request.method == "POST":
+        selected_class = request.data.get("selected_class")
+        selected_term = request.data.get("selected_term")
+        if get_stream:
+            selected_stream = request.data.get("selected_stream")
+
+        if selected_stream:
+            redirect_url = reverse(
+                "resultstreamterm",
+                name=selected_class,
+                stream=selected_stream,
+                term=selected_term,
+            )
+        redirect_url = reverse(
+            "resultperterm",
+            name=selected_class,
+            term=selected_term,
+        )
+        return Response({"redirect_url": redirect_url})
+
+    context = {
+        "classes": [str(c) for c in get_class()],
+        "terms": [str(t) for t in all_terms()],
+        "streams": [str(s) for s in get_stream()],
+    }
+    return Response(context)
+
+
+@api_view(["GET"])
+def getresultstreamterm(request, name, term, stream=None):
+    subjects = all_subjects()
+    students = get_students_by_class_and_stream(name, stream)
+    results = collect_student_marks(students, subjects, term)
+    sorted_results = sort_results_by_total_marks(results)
+    indexed_results = add_index_to_results(sorted_results)
+    avg_marks = calculate_average_marks_and_grading(indexed_results, term)
+    print(indexed_results)
+
+    context = {
+        "page_obj": indexed_results,
+        "subjects": [str(sub) for sub in all_subjects()],
+    }
+    return Response(context)

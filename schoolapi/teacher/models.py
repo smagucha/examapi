@@ -30,6 +30,7 @@ class Teacher(models.Model):
     designation = models.ForeignKey(
         Designation, on_delete=models.CASCADE, blank=True, null=True
     )
+    # {"user": 6,"date_of_appointment": '2026-12-31', "designation": 6, "gender": 'Male'}
 
 
 class Teachersubjects(models.Model):

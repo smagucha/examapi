@@ -39,4 +39,15 @@ urlpatterns = [
         views.viewattendanceperstream,
         name="viewattendanceperclass",
     ),
+    path("allparents/", views.get_all_parents),
+    path(
+        "class/<str:name>/",
+        views.student_class,
+        name="classstudent",
+    ),
+    path(
+        "class/<str:name>/<str:stream>/",
+        views.student_class,
+        name="streamstudent",
+    ),
 ]

@@ -41,17 +41,7 @@ class MarkManager(models.Manager):
         }
         if stream:
             query_params["student__stream__name"] = stream
-        return (
-            self.filter(**query_params)
-            .order_by("-marks")
-            .values_list(
-                "student__first_name",
-                "student__middle_name",
-                "student__last_name",
-                "name__name",
-                "marks",
-            )
-        )
+        return self.filter(**query_params).order_by("-marks")
 
     def student_result_per_term_class(self, term, student, classname, stream=None):
         query_params = {

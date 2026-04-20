@@ -135,7 +135,7 @@ function TakeAttendanceForStream() {
 
     return (
       <tr key={student.student_id}>
-        <td>{student["full name"]}</td>
+        <td>{student.full_name}</td>
         <td>{student.class_name}</td>
         <td>{student.stream_name}</td>
         <td>

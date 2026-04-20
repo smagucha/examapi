@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/TakeAttendance.css";
 
-function EnterResultSelector() {
+function SelectClassorStreamToEnrollSubject() {
   const navigate = useNavigate();
 
-  const [data, setData] = useState({ classes: [], streams: [], subjects: [], terms: [] });
-  const [formData, setFormData] = useState({ class: "", stream: "" , subject: "", term: ""});
+  const [data, setData] = useState({ classes: [], streams: [] });
+  const [formData, setFormData] = useState({ class: "", stream: "" });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/result/enter_result_for_stream_or_class/")
+      .get("http://127.0.0.1:8000/result/enroll_students_to_student/")
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -47,12 +47,11 @@ function EnterResultSelector() {
 
     setTimeout(() => {
       if (formData.stream) {
-        
         navigate(
-          `/enterexam/${formData.class}/${formData.stream}/${formData.term}/${formData.subject}/`
+          `/enrollstudentstosubject/${formData.class}/${formData.stream}/`
         );
       } else {
-        navigate(`/enterexamforclass/${formData.class}/${formData.term}/${formData.subject}/`);
+        navigate(`/enrollstudentstosubjectclass/${formData.class}/`);
       }
     }, 500);
   };
@@ -70,7 +69,7 @@ function EnterResultSelector() {
     <div className="take-attendance-container">
       <div className="take-attendance-card">
         <div className="take-attendance-header">
-          <h2 className="take-attendance-title">📋 enter result</h2>
+          <h2 className="take-attendance-title">📋 view Attendance</h2>
           <p className="take-attendance-subtitle">
             Select class and optional stream
           </p>
@@ -117,44 +116,7 @@ function EnterResultSelector() {
               ))}
             </select>
           </div>
-           <div className="form-group">
-            <label className="form-label">
-              subject <span className="required">*</span>
-            </label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select subject</option>
-              {data?.subjects?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">
-              term <span className="required">*</span>
-            </label>
-            <select
-              name="term"
-              value={formData.term}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select term</option>
-              {data?.terms?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
+
           <button
             type="submit"
             className={submitting ? "submit-btn disabled" : "submit-btn"}
@@ -168,4 +130,4 @@ function EnterResultSelector() {
   );
 }
 
-export default EnterResultSelector;
+export default SelectClassorStreamToEnrollSubject;

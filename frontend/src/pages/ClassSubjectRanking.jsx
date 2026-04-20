@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/TakeAttendance.css";
 
-function EnterResultSelector() {
+function ClassSubjectRanking() {
   const navigate = useNavigate();
 
   const [data, setData] = useState({ classes: [], streams: [], subjects: [], terms: [] });
@@ -14,7 +14,7 @@ function EnterResultSelector() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/result/enter_result_for_stream_or_class/")
+      .get("http://127.0.0.1:8000/result/classubjectranking/")
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -47,12 +47,11 @@ function EnterResultSelector() {
 
     setTimeout(() => {
       if (formData.stream) {
-        
         navigate(
-          `/enterexam/${formData.class}/${formData.stream}/${formData.term}/${formData.subject}/`
+          `/subjectperrankstreamterm/${formData.class}/${formData.stream}/${formData.term}/${formData.subject}/`
         );
       } else {
-        navigate(`/enterexamforclass/${formData.class}/${formData.term}/${formData.subject}/`);
+        navigate(`/subjectperrankclass/${formData.class}/${formData.term}/${formData.subject}/`);
       }
     }, 500);
   };
@@ -168,4 +167,4 @@ function EnterResultSelector() {
   );
 }
 
-export default EnterResultSelector;
+export default ClassSubjectRanking;

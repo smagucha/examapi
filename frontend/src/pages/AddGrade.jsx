@@ -24,7 +24,7 @@ function AddGrade() {
                     onChange={(e) => setNewGrade({...newGrade, percent: e.target.value})} 
                     required 
                 />
-                 <input 
+        5         <input 
                     type="text" placeholder="name" 
                     onChange={(e) => setNewGrade({...newGrade, name: e.target.value})} 
                     required 

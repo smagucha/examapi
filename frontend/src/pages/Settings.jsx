@@ -2,6 +2,8 @@ import "../css/Home.css";
 import { Link } from "react-router-dom";
 import {
   FaUserGraduate,
+  FaBook,
+  FaAward,
   FaUsers,
   FaChalkboardTeacher,
   FaCalendarAlt,
@@ -17,14 +19,14 @@ import {
 
 export default function Settings() {
   const cards = [
-    { title: "subjects", icon: <FaUserGraduate />, path: "/subjectslist" },
-    { title: "grades", icon: <FaUsers />, path: "/gradelist" },
+    { title: "subjects", icon: <FaBook />, path: "/subjectslist" },
+    { title: "grades", icon: <FaAward />, path: "/gradelist" },
     { title: "streams", icon: <FaChalkboardTeacher />, path: "/liststream" },
     { title: "terms", icon: <FaClipboardCheck />, path: "/listterm" },
-    { title: "enroll student to subjects", icon: <FaEye />, path: "/view-attendance" },
+    { title: "enroll student to subjects", icon: <FaEye />, path: "/SelectClassorStreamToEnrollSubject" },
     { title: "subjects enrolled by student", icon: <FaPenFancy />, path: "/select-class-subject-enrolled" },
     { title: "classes", icon: <FaEdit />, path: "/listclass" },
-    { title: "users", icon:<FaUsers/>, path:"/gradelist"},
+    { title: "users", icon:<FaUsers/>, path:"/users"},
   ];
   return (
     

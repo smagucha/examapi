@@ -17,7 +17,7 @@ import {
 
 export default function Home() {
   const cards = [
-    { title: "All Student", icon: <FaUserGraduate />, path: "/students" },
+    { title: "Classes", icon: <FaUserGraduate />, path: "/Classes" },
     { title: "Parents", icon: <FaUsers />, path: "/parents" },
     { title: "Teachers", icon: <FaChalkboardTeacher />, path: "/teachers" },
     { title: "Events", icon: <FaCalendarAlt />, path: "/events" },
@@ -27,7 +27,6 @@ export default function Home() {
     { title: "Update Results", icon: <FaEdit />, path: "/update-results" },
     { title: "Subject Ranking", icon: <FaChartBar />, path: "/subject-ranking" },
     { title: "Results Per Class", icon: <FaFileAlt />, path: "/results-per-class" },
-    { title: "Class Ranking", icon: <FaTrophy />, path: "/class-ranking" },
     { title: "Setting", icon: <FaCog />, path: "/settings" },
   ];
   return (

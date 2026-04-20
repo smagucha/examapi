@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/TakeAttendance.css";
 
-function EnterResultSelector() {
+function ResultStreamorTerm() {
   const navigate = useNavigate();
 
-  const [data, setData] = useState({ classes: [], streams: [], subjects: [], terms: [] });
-  const [formData, setFormData] = useState({ class: "", stream: "" , subject: "", term: ""});
+  const [data, setData] = useState({ classes: [], streams: [], terms: [] });
+  const [formData, setFormData] = useState({ class: "", stream: "" , term: ""});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/result/enter_result_for_stream_or_class/")
+      .get("http://127.0.0.1:8000/result/selectstreamorclassforresult/")
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -47,12 +47,11 @@ function EnterResultSelector() {
 
     setTimeout(() => {
       if (formData.stream) {
-        
         navigate(
-          `/enterexam/${formData.class}/${formData.stream}/${formData.term}/${formData.subject}/`
+          `/resultstreamterm/${formData.class}/${formData.stream}/${formData.term}/`
         );
       } else {
-        navigate(`/enterexamforclass/${formData.class}/${formData.term}/${formData.subject}/`);
+        navigate(`/resultperclassterm/${formData.class}/${formData.term}/`);
       }
     }, 500);
   };
@@ -117,25 +116,6 @@ function EnterResultSelector() {
               ))}
             </select>
           </div>
-           <div className="form-group">
-            <label className="form-label">
-              subject <span className="required">*</span>
-            </label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select subject</option>
-              {data?.subjects?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="form-group">
             <label className="form-label">
               term <span className="required">*</span>
@@ -168,4 +148,4 @@ function EnterResultSelector() {
   );
 }
 
-export default EnterResultSelector;
+export default ResultStreamorTerm;

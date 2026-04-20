@@ -1,57 +1,63 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 // 1. Capitalize function name so React recognizes it as a component
-function Parent() {
-    const [parentData, setParenteData] = useState([]);
+function SubjectPerRank() {
+    const { name, stream, term, subject } = useParams(); 
+    const [SubjectresultsData, setSubjectresultsData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLoading(true);
         
         // 2. Add your full backend URL prefix here
-        const baseUrl = "http://localhost:8000/allparents/"; 
-        axios.get(baseUrl)
+        const baseUrl = "http://localhost:8000"; 
+        const apiUrl = stream 
+            ? `${baseUrl}/result/subjectperrankstreamterm/${name}/${stream}/${term}/${subject}/`
+            : `${baseUrl}/result/subjectperrankclass/${name}/${term}/${subject}/`;           
+        axios.get(apiUrl)
             .then(res => {
                 // 3. Ensure we only set state if the response is an array
                 if (Array.isArray(res.data)) {
-                    setParenteData(res.data);
+                    setSubjectresultsData(res.data);
                 } else {
                     console.error("Expected an array but got:", res.data);
-                    setParenteData([]); // Fallback to empty array
+                    setSubjectresultsData([]); // Fallback to empty array
                 }
                 setLoading(false);
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
                 setLoading(false);
-                setParenteData([]); // Clear data on error
+                setSubjectresultsData([]); // Clear data on error
             });
-    },[]);
+    }, [name, stream]);
 
-    if (loading) return <p>Loading parent records...</p>;
-
+    if (loading) return <p>Loading subject ranking...</p>;
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Parents</h2>
+            <h2>subject ranking for {name} {stream ? `(${stream} Stream)` : '(Full Class)'}</h2>
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f2f2f2' }}>
-                        <th>Parent</th>
-                        <th>Phone</th>
-                        <th>Student</th>
-                        <th> class </th>
+                        <th>Full Name</th>
+                        <th>Subject</th>
+                        <th>Term</th>
+                        <th>stream</th>
+                        <th>marks</th>
                     </tr>
                 </thead>
                 <tbody>
                     {/* 4. Use Array.isArray check to prevent "map is not a function" error */}
-                    {Array.isArray(parentData) && parentData.length > 0 ? (
-                        parentData.map((item, index) => (
+                    {Array.isArray(SubjectresultsData) && SubjectresultsData.length > 0 ? (
+                        SubjectresultsData.map((item, index) => (
                             <tr key={index}>
-                                <td>{item.full_name}</td>
-                                <td>{item.phone_number}</td>
                                 <td>{item.student}</td>
-                                <td>{item.student_class}</td>
+                                <td>{item.subject}</td>
+                                <td>{item.term}</td>
+                                <td>{item.stream || 'N/A'}</td>
+                                <td>{item.marks}</td>
                             </tr>
                         ))
                     ) : (
@@ -65,4 +71,4 @@ function Parent() {
     );
 }
 
-export default Parent;
+export default SubjectPerRank;
