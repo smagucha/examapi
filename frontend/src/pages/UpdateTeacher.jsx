@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../components/api";
 import { useParams, useNavigate } from 'react-router-dom'; 
 import "../css/TakeAttendance.css";
 
@@ -17,11 +17,11 @@ function UpdateTeacher() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userResponse = await axios.get(
-          `http://127.0.0.1:8000/teacher/teacher_detail/${pk}/`
+        const userResponse = await api.get(
+          `/teacher/teacher_detail/${pk}/`
         );
-        const designationResponse = await axios.get(
-          "http://127.0.0.1:8000/teacher/list_designation/"
+        const designationResponse = await api.get(
+          "/teacher/list_designation/"
         );
         setFormData(userResponse.data);
         setDesignations(designationResponse.data);
@@ -46,14 +46,14 @@ function UpdateTeacher() {
     e.preventDefault();
 
     try {
-      const response = await axios.put(
-        `http://127.0.0.1:8000/teacher/teacher_detail/${pk}/`,
+      const response = await api.put(
+        `/teacher/teacher_detail/${pk}/`,
         formData
       );
       console.log(formData)
       alert("Teacher information updated saved successfully!");
     } catch (err) {
-      console.error("Axios post error:", err.response?.data || err.message);
+      console.error("api post error:", err.response?.data || err.message);
       alert("Error: " + JSON.stringify(err.response?.data));
     }
   };

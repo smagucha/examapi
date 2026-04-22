@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 
 // Define your base URL once to keep things clean
-const BASE_URL = "http://localhost:8000"; 
+
 
 function EventList() {
     const [events, setEvents] = useState([]);
@@ -11,7 +11,7 @@ function EventList() {
 
     // 1. GET - Fetch all events
     useEffect(() => {
-        axios.get(`${BASE_URL}/events/event_list/`) 
+        api.get(`/events/event_list/`) 
             .then(res => {
                 setEvents(res.data);
                 setLoading(false);
@@ -25,10 +25,8 @@ function EventList() {
     // 2. DELETE - Remove an event by ID
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this event?")) {
-            // This hits your @api_view(["DELETE"]) def event_detail(request, pk)
-            axios.delete(`${BASE_URL}/events/event/${id}/`)
+            api.delete(`/events/event/${id}/`)
                 .then(() => {
-                    // Update UI immediately by filtering out the deleted event
                     setEvents(events.filter(event => event.id !== id));
                     alert("Event deleted successfully");
                 })

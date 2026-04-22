@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {  useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../components/api";
 import "../css/MarksEntryTable.css";
 
 const EnterResult = () => {
@@ -24,16 +24,15 @@ const EnterResult = () => {
 
   const getApiUrl = () => {
     if (stream) {
-      http://127.0.0.1:8000/result/enterexam/one/red/third%20term/math/
-      return `http://127.0.0.1:8000/result/enterexam/${name}/${stream}/${term}/${subject}/`;
+      return `/result/enterexam/${name}/${stream}/${term}/${subject}/`;
     }
-    return `http://127.0.0.1:8000/result/enterexamforclass/${name}/${term}/${subject}/`;
+    return `/result/enterexamforclass/${name}/${term}/${subject}/`;
   };
   const fetchStudents = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(getApiUrl());
+      const response = await api.get(getApiUrl());
       setStudents(response.data);
       console.log(response.data)
       const initialMarks = {};
@@ -83,7 +82,7 @@ const EnterResult = () => {
 
       const marksList = students.map((student) => marks[student.student_id]);
 
-      await axios.post(getApiUrl(), {
+      await api.post(getApiUrl(), {
         subjectname: marksList,
       });
 

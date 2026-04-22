@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000"; 
+import api from "../components/api"; 
 
 function UpdateClass() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -16,7 +14,7 @@ function UpdateClass() {
 
     // 1. GET: Fetch existing data when the component loads
     useEffect(() => {
-        axios.get(`${BASE_URL}/class_detail/${pk}/`)
+        api.get(`/class_detail/${pk}/`)
             .then(res => {
                 setFormData(res.data);
                 setLoading(false);
@@ -30,7 +28,7 @@ function UpdateClass() {
     // 2. PUT: Send updated data to Django
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`${BASE_URL}/class_detail/${pk}/`, formData)
+        api.put(`/class_detail/${pk}/`, formData)
             .then(res => {
                 alert("class updated successfully!");
                 navigate('/listclass'); // Redirect back to the list

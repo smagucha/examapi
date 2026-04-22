@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 
 
 function UpdateSubject(){
@@ -14,7 +14,7 @@ function UpdateSubject(){
 	const [loading, setLoading] = useState(true)
 
 	useEffect (()=>{
-		axios.get(`http://127.0.0.1:8000/result/detail_subject/${pk}/`)
+		api.get(`/result/detail_subject/${pk}/`)
 		.then(res =>{
 			setFormData(res.data);
 			setLoading(false)
@@ -26,7 +26,7 @@ function UpdateSubject(){
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		axios.put(`http://127.0.0.1:8000/result/detail_subject/${pk}/`, formData)
+		api.put(`/result/detail_subject/${pk}/`, formData)
 		.then(res =>{
 			alert("subject updated successfully!");
 			navigate("/subjectslist");

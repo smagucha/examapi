@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../css/TakeAttendance.css";
+import api from "../components/api";
 
 function ClassSubjectRanking() {
   const navigate = useNavigate();
@@ -13,8 +13,8 @@ function ClassSubjectRanking() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/result/classubjectranking/")
+    api
+      .get(`/result/classubjectranking/`)
       .then((response) => {
         setData(response.data);
         setLoading(false);

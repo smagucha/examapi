@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 import { Link } from 'react-router-dom';
 
 // 1. Capitalize function name so React recognizes it as a component
@@ -11,14 +11,12 @@ function ResultForClassTreamPerSubject() {
 
     useEffect(() => {
         setLoading(true);
-        
-        // 2. Add your full backend URL prefix here
-        const baseUrl = "http://localhost:8000"; 
+    
         const apiUrl = stream 
-            ? `${baseUrl}/result/subject_results_classtream/${name}/${term}/${subject}/${stream}/`
-            : `${baseUrl}/result/subject_results_class/${name}/${term}/${subject}/`;
+            ? `/result/subject_results_classtream/${name}/${term}/${subject}/${stream}/`
+            : `/result/subject_results_class/${name}/${term}/${subject}/`;
 
-        axios.get(apiUrl)
+        api.get(apiUrl)
             .then(res => {
                 // 3. Ensure we only set state if the response is an array
                 if (Array.isArray(res.data)) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../components/api";
 
 export default function EnrollStudentsToSubject() {
   const { name, stream } = useParams();
@@ -12,8 +12,8 @@ export default function EnrollStudentsToSubject() {
   const BASE_URL = "http://127.0.0.1:8000";
 
   const endpoint = stream
-    ? `${BASE_URL}/result/enrollstudentstosubject/${name}/${stream}/`
-    : `${BASE_URL}/result/enrollstudentstosubjectclass/${name}/`;
+    ? `/result/enrollstudentstosubject/${name}/${stream}/`
+    : `/result/enrollstudentstosubjectclass/${name}/`;
 
   useEffect(() => {
     fetchData();
@@ -21,7 +21,7 @@ export default function EnrollStudentsToSubject() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(endpoint);
+      const res = await api.get(endpoint);
       setStudents(res.data.students || []);
       setSubjects(res.data.subjects || []);
     } catch (error) {
@@ -53,7 +53,7 @@ export default function EnrollStudentsToSubject() {
     }
 
     try {
-      const res = await axios.post(endpoint, payload, {
+      const res = await api.post(endpoint, payload, {
         headers: {
           "Content-Type": "application/json",
         },

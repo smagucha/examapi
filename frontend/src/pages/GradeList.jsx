@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 
 const BASE_URL = "http://localhost:8000"; 
 
@@ -10,7 +10,7 @@ function GradeList() {
 
     // 1. GET - Fetch all events
     useEffect(() => {
-        axios.get(`${BASE_URL}/result/list_grade/`) 
+        api.get(`/result/list_grade/`) 
             .then(res => {
                 setGrades(res.data);
                 setLoading(false);
@@ -25,7 +25,7 @@ function GradeList() {
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this grade?")) {
             // This hits your @api_view(["DELETE"]) def event_detail(request, pk)
-            axios.delete(`${BASE_URL}/result/detail_grade/${id}/`)
+            api.delete(`/result/detail_grade/${id}/`)
                 .then(() => {
                     // Update UI immediately by filtering out the deleted event
                     setGrades(grades.filter(grade => grade.id !== id));

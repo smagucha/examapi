@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from "../components/api"
 
 function AddGrade() {
     const [newGrade, setNewGrade] = useState({ percent: '', name: '', points: '' });
@@ -8,7 +8,7 @@ function AddGrade() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("http://127.0.0.1:8000/result/add_grade/", newGrade)
+        api.post(`/result/add_grade/`, newGrade)
             .then(res => {
                 alert("Grade Created!");
                 navigate('/events/'); 
@@ -24,7 +24,7 @@ function AddGrade() {
                     onChange={(e) => setNewGrade({...newGrade, percent: e.target.value})} 
                     required 
                 />
-        5         <input 
+                 <input 
                     type="text" placeholder="name" 
                     onChange={(e) => setNewGrade({...newGrade, name: e.target.value})} 
                     required 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../components/api";
 import "../css/TakeAttendance.css";
+import SelectReusable from "../components/SelectReusable";
 
 function SelectClassorStreamToEnrollSubject() {
   const navigate = useNavigate();
@@ -13,8 +14,8 @@ function SelectClassorStreamToEnrollSubject() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/result/enroll_students_to_student/")
+    api
+      .get(`/result/enroll_students_to_student/`)
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -80,7 +81,7 @@ function SelectClassorStreamToEnrollSubject() {
         )}
 
         <form onSubmit={handleSubmit} className="take-attendance-form">
-          <div className="form-group">
+          {/*<div className="form-group">
             <label className="form-label">
               Class <span className="required">*</span>
             </label>
@@ -98,9 +99,16 @@ function SelectClassorStreamToEnrollSubject() {
                 </option>
               ))}
             </select>
-          </div>
+          </div>*/}
+            <SelectReusable 
+            label="Class"
+            name="class"
+            options={data.classes}
+            value={formData.class}
+            onChange={handleChange}
+          />
 
-          <div className="form-group">
+          {/*<div className="form-group">
             <label className="form-label">Stream (Optional)</label>
             <select
               name="stream"
@@ -116,7 +124,14 @@ function SelectClassorStreamToEnrollSubject() {
               ))}
             </select>
           </div>
-
+         */}
+           <SelectReusable 
+            label="Stream (Optional)"
+            name="stream"
+            options={data.streams}
+            value={formData.stream}
+            onChange={handleChange}
+          />
           <button
             type="submit"
             className={submitting ? "submit-btn disabled" : "submit-btn"}

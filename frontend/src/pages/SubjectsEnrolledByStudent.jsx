@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../components/api";
 import { useParams } from "react-router-dom";
 
 export default function SubjectsEnrolledByStudent() {
@@ -11,8 +11,8 @@ export default function SubjectsEnrolledByStudent() {
 
   // Build API URL depending on whether stream exists
   const API_URL = stream
-    ? `http://127.0.0.1:8000/result/studentenrolledsubjects/${name}/${stream}/${subject}/`
-    : `http://127.0.0.1:8000/result/subjects_enrolled_by_student/${name}/${subject}/`;
+    ? `/result/studentenrolledsubjects/${name}/${stream}/${subject}/`
+    : `/result/subjects_enrolled_by_student/${name}/${subject}/`;
 
   useEffect(() => {
     const fetchEnrolledStudents = async () => {
@@ -20,7 +20,7 @@ export default function SubjectsEnrolledByStudent() {
         setLoading(true);
         setError("");
 
-        const response = await axios.get(API_URL);
+        const response = await api.get(API_URL);
 
         console.log("API Response:", response.data);
 

@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useParams } from "react-router-dom";
 import "../css/Home.css";
+import api from "../components/api";
 function StudentPerClassTream() {
     const { name, stream } = useParams();
     const [student, setStudent] = useState([]);
     const [streams, setStreams] = useState([]);
     const [loading, setLoading] = useState(true);
     const API_URL = stream
-    ? `http://127.0.0.1:8000/class/${name}/${stream}/`
-    : `http://127.0.0.1:8000/class/${name}/`;
+    ? `/class/${name}/${stream}/`
+    : `/class/${name}/`;
 
 
     // 1. GET - Fetch all events
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const StudentResponse = await axios.get(API_URL);
-                const StreamResponse = await axios.get(`http://127.0.0.1:8000/stream_list/`);
+                const StudentResponse = await api.get(API_URL);
+                const StreamResponse = await api.get(`/stream_list/`);
                 setStudent(StudentResponse.data);
                 setStreams(StreamResponse.data);
                 setLoading(false);
@@ -34,7 +34,7 @@ function StudentPerClassTream() {
     const handleDelete = (pk) => {
         if (window.confirm("Are you sure you want to delete this student?")) {
             // This hits your @api_view(["DELETE"]) def event_detail(request, pk)
-            axios.delete(`http://127.0.0.1:8000/student/${pk}/`)
+            api.delete(`/student/${pk}/`)
                 .then(() => {
                     // Update UI immediately by filtering out the deleted event
                     setStudent(student.filter(student => student.pk !== pk));
@@ -49,15 +49,19 @@ function StudentPerClassTream() {
     if (loading) return <p>Loading student...</p>;
     return (
         <div style={{ padding: '20px' }}>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {streams.map((streams) => (
-                <Link to={`/Class/${name}/${streams.name}/`} key={streams.id}>
-                    <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                        {streams.name}
-                    </button>
-                </Link>
-                ))};
+               {/* Only display the stream container if there are streams available */}
+        {streams.length > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <p>to view students per stream you can click the streams button</p>
+                {streams.map((s) => (
+                    <Link to={`/Class/${name}/${s.name}/`} key={s.id}>
+                        <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                            {s.name}
+                        </button>
+                    </Link>
+                ))}
             </div>
+        )}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>students</h2>
                 <Link to="/addsubject">
@@ -115,5 +119,3 @@ function StudentPerClassTream() {
 }
 
 export default StudentPerClassTream;
-
-/*{`/subject/edit/${subject.id}/`}*/ 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 
 // 1. Capitalize function name so React recognizes it as a component
 function SubjectPerRank() {
@@ -12,11 +12,10 @@ function SubjectPerRank() {
         setLoading(true);
         
         // 2. Add your full backend URL prefix here
-        const baseUrl = "http://localhost:8000"; 
         const apiUrl = stream 
-            ? `${baseUrl}/result/subjectperrankstreamterm/${name}/${stream}/${term}/${subject}/`
-            : `${baseUrl}/result/subjectperrankclass/${name}/${term}/${subject}/`;           
-        axios.get(apiUrl)
+            ? `/result/subjectperrankstreamterm/${name}/${stream}/${term}/${subject}/`
+            : `/result/subjectperrankclass/${name}/${term}/${subject}/`;           
+        api.get(apiUrl)
             .then(res => {
                 // 3. Ensure we only set state if the response is an array
                 if (Array.isArray(res.data)) {

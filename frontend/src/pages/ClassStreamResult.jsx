@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';import axios from 'axios';
 import { Link } from 'react-router-dom';
+import api from "../components/api";
 
 // 1. Capitalize function name so React recognizes it as a component
 function ClassStreamResult() {
@@ -12,14 +12,11 @@ function ClassStreamResult() {
 
     useEffect(() => {
         setLoading(true);
-        
-        // 2. Add your full backend URL prefix here
-        const baseUrl = "http://localhost:8000"; 
         const apiUrl = stream 
-            ? `${baseUrl}/result/resultstreamterm/${name}/${term}/${stream}/`
-            : `${baseUrl}/result/resultperclassterm/${name}/${term}/`;
+            ? `/result/resultstreamterm/${name}/${term}/${stream}/`
+            : `/result/resultperclassterm/${name}/${term}/`;
 
-        axios.get(apiUrl)
+        api.get(apiUrl)
             .then(response => {
                 setResultData(response.data.page_obj);
                 setSubject(response.data.subjects)

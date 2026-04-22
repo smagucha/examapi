@@ -1,33 +1,33 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import api from "../components/api"
 
-function AddStream(){
-	const [newStream, setNewStream] = useState({name: ''});
+function AddClass(){
+	const [newClass, setNewClass] = useState({name: ''});
 	const navigate = useNavigate();
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		axios.post("http://127.0.0.1:8000/add_stream/", newStream)
+		api.post(`/add_class/`, newClass)
 		.then(res  => {
-			alert("stream created!");
-			navigate('/liststream');
+			alert("class created!");
+			navigate('/listclass');
 		})
-		.catch(err => console.error("Error creating stream:", err.response.data));
+		.catch(err => console.error("Error creating class:", err.response.data));
 	};
 	return(
 		<div style={{ padding: '20px' }}>
-            <h2>Add new stream</h2>
+            <h2>Add New Class</h2>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="text" placeholder="name" 
-                    onChange={(e) => setNewStream({...newStream, name: e.target.value})} 
+                    onChange={(e) => setNewClass({...newClass, name: e.target.value})} 
                     required 
                 />
                 <button type="submit" style={{ backgroundColor: 'green', color: 'white' }}>
-                    Create stream
+                    Create Class
                 </button>
             </form>
         </div>
 		);
 }
-export default AddStream;
+export default AddClass;

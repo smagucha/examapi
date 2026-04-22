@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000"; 
+import api from "../components/api";
 
 function UpdateTerm() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -16,7 +14,7 @@ function UpdateTerm() {
 
     // 1. GET: Fetch existing data when the component loads
     useEffect(() => {
-        axios.get(`${BASE_URL}/result/detail_term/${pk}/`)
+        api.get(`/result/detail_term/${pk}/`)
             .then(res => {
                 setFormData(res.data);
                 setLoading(false);
@@ -30,7 +28,7 @@ function UpdateTerm() {
     // 2. PUT: Send updated data to Django
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`${BASE_URL}/result/detail_term/${pk}/`, formData)
+        api.put(`/result/detail_term/${pk}/`, formData)
             .then(res => {
                 alert("stream updated successfully!");
                 navigate('/listterm'); // Redirect back to the list

@@ -140,7 +140,6 @@ class Attendance(models.Model):
 
     class Meta:
         ordering = ["id"]
-        unique_together = ("student", "todaydate")
 
     objects = models.Manager()
     attend = AttendManager()

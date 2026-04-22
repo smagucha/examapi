@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://127.0.0.1:8000"; 
+import api from "../components/api";
 
 function SubjectsList() {
     const [subjects, setSubjects] = useState([]);
@@ -10,7 +8,7 @@ function SubjectsList() {
 
     // 1. GET - Fetch all events
     useEffect(() => {
-        axios.get(`${BASE_URL}/result/allsubjects`) 
+        api.get(`/result/allsubjects`) 
             .then(res => {
                 setSubjects(res.data);
                 setLoading(false);
@@ -25,7 +23,7 @@ function SubjectsList() {
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this subject?")) {
             // This hits your @api_view(["DELETE"]) def event_detail(request, pk)
-            axios.delete(`${BASE_URL}/result/detail_subject/${id}/`)
+            api.delete(`/result/detail_subject/${id}/`)
                 .then(() => {
                     // Update UI immediately by filtering out the deleted event
                     setSubjects(subjects.filter(subject => subject.id !== id));

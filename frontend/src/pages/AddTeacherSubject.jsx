@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {useNavigate} from 'react-router-dom';
 import "../css/TakeAttendance.css";
+import api from "../components/api";
+import ReusableSelect from "../components/ReusableSelect";
 
 function AddTeacherSubject() {
   const navigate = useNavigate();
@@ -20,17 +21,17 @@ function AddTeacherSubject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const TeacherResponse = await axios.get(
-          `http://127.0.0.1:8000/teacher/list_teacher/`
+        const TeacherResponse = await api.get(
+          `/teacher/list_teacher/`
         );
-        const SubjectResponse = await axios.get(
-          "http://127.0.0.1:8000/result/list_subjects/"
+        const SubjectResponse = await api.get(
+          `/result/list_subjects/`
         );
-        const ClassResponse = await axios.get(
-          `http://127.0.0.1:8000/all_classes/`
+        const ClassResponse = await api.get(
+          `/all_classes/`
         );
-        const StreamResponse = await axios.get(
-          "http://127.0.0.1:8000/stream_list/"
+        const StreamResponse = await api.get(
+          `/stream_list/`
         );
         setTeacher(TeacherResponse.data);
         setSubject(SubjectResponse.data);
@@ -56,11 +57,10 @@ function AddTeacherSubject() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/teacher/add_teachersubject/`,
+      const response = await api.post(
+        `/teacher/add_teachersubject/`,
         formData
       );
-      console.log(formData)
       alert("Teacher information updated saved successfully!");
       navigate('/teachersubject/');
     } catch (err) {
@@ -80,9 +80,9 @@ function AddTeacherSubject() {
           gap: "10px",
           maxWidth: "300px",
         }}
-      >
+      >      
         {/* Teacher */}
-        <label>Teacher</label>
+      <label>Teacher</label>
         <select
           name="teacher"
           value={formData.teacher}
@@ -98,53 +98,30 @@ function AddTeacherSubject() {
         </select>
 
         {/* subject */}
-        <label>subject</label>
-        <select
-          name="Subject"
-          value={formData.Subject}
-          onChange={handleChange}
-          required
-        >
-          <option value="">-- Select subject --</option>
-          {subject.map((s, index) => (
-          <option key={s.id || index} value={s.id}>
-          {s.name}
-          </option>
-            ))}
-        </select>
-
+      <ReusableSelect 
+        label="subject"
+        name="Subject"
+        options={subject}
+        value={formData.Subject}
+        onChange={handleChange}
+      />
         {/* classes */}
-    <label>Classes</label>
-        <select
-          name="Class"
-          value={formData.Class}
-          onChange={handleChange}
-          required
-        >
-          <option value="">-- Select class --</option>
-          {Classes.map((c, index) => (
-          <option key={c.id || index} value={c.id}>
-          {c.name}
-          </option>
-            ))}
-        </select>
-
+      <ReusableSelect 
+        label="Classes"
+        name="Class"
+        options={Classes}
+        value={formData.Class}
+        onChange={handleChange}
+      />
         {/* stream */}
-        <label>stream</label>
-        <select
-          name="stream"
-          value={formData.stream}
-          onChange={handleChange}
-          required
-        >
-          <option value="">-- Select stream --</option>
-          {stream.map((s, index) => (
-          <option key={s.id || index} value={s.id}>
-          {s.name}
-          </option>
-            ))}
-        </select>
-          <input type="submit" value="Submit" style={{ marginTop: "10px" }} />
+       <ReusableSelect 
+        label="stream"
+        name="stream"
+        options={stream}
+        value={formData.stream}
+        onChange={handleChange}
+      />
+      <input type="submit" value="Submit" style={{ marginTop: "10px" }} />
       </form>
     </div>
   );

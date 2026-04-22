@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../components/api";
 import "../css/TakeAttendanceForStream.css";
 
 function TakeAttendanceForStream() {
@@ -17,12 +17,12 @@ function TakeAttendanceForStream() {
     let url = "";
 
     if (stream) {
-      url = `http://127.0.0.1:8000/take_attendance_for_stream/${name}/${stream}/`;
+      url = `/take_attendance_for_stream/${name}/${stream}/`;
     } else {
-      url = `http://127.0.0.1:8000/take_attendance/${name}/`;
+      url = `/take_attendance/${name}/`;
     }
 
-    axios
+    api
       .get(url)
       .then((res) => {
         if (Array.isArray(res.data)) {
@@ -67,13 +67,13 @@ function TakeAttendanceForStream() {
     let url = "";
 
     if (stream) {
-      url = `http://127.0.0.1:8000/take_attendance_for_stream/${name}/${stream}/`;
+      url = `/take_attendance_for_stream/${name}/${stream}/`;
     } else {
-      url = `http://127.0.0.1:8000/take_attendance/${name}/`;
+      url = `/take_attendance/${name}/`;
     }
 
     try {
-      const res = await axios.post(url, attendance, {
+      const res = await api.post(url, attendance, {
         headers: {
           "Content-Type": "application/json",
         },

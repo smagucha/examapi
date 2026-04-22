@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../css/TakeAttendance.css";
+import api from "../components/api";
+import SelectReusable from "../components/SelectReusable";
 
 function EnterResultSelector() {
   const navigate = useNavigate();
@@ -13,8 +14,8 @@ function EnterResultSelector() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/result/enter_result_for_stream_or_class/")
+    api
+      .get("/result/enter_result_for_stream_or_class/")
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -81,7 +82,7 @@ function EnterResultSelector() {
         )}
 
         <form onSubmit={handleSubmit} className="take-attendance-form">
-          <div className="form-group">
+          {/*<div className="form-group">
             <label className="form-label">
               Class <span className="required">*</span>
             </label>
@@ -99,9 +100,16 @@ function EnterResultSelector() {
                 </option>
               ))}
             </select>
-          </div>
+          </div>*/}
+          <SelectReusable 
+            label="Class"
+            name="class"
+            options={data.classes}
+            value={formData.class}
+            onChange={handleChange}
+          />
 
-          <div className="form-group">
+          {/*<div className="form-group">
             <label className="form-label">Stream (Optional)</label>
             <select
               name="stream"
@@ -116,8 +124,15 @@ function EnterResultSelector() {
                 </option>
               ))}
             </select>
-          </div>
-           <div className="form-group">
+          </div>*/}
+           <SelectReusable 
+            label="Stream (Optional)"
+            name="stream"
+            options={data.streams}
+            value={formData.stream}
+            onChange={handleChange}
+          />
+           {/*<div className="form-group">
             <label className="form-label">
               subject <span className="required">*</span>
             </label>
@@ -135,8 +150,16 @@ function EnterResultSelector() {
                 </option>
               ))}
             </select>
-          </div>
-          <div className="form-group">
+          </div>*/}
+           <SelectReusable 
+            label="subject"
+            name="subject"
+            options={data.subjects}
+            value={formData.subjects}
+            onChange={handleChange}
+          />
+
+          {/*<div className="form-group">
             <label className="form-label">
               term <span className="required">*</span>
             </label>
@@ -154,7 +177,14 @@ function EnterResultSelector() {
                 </option>
               ))}
             </select>
-          </div>
+          </div>*/}
+            <SelectReusable 
+            label="term"
+            name="term"
+            options={data.terms}
+            value={formData.term}
+            onChange={handleChange}
+          />
           <button
             type="submit"
             className={submitting ? "submit-btn disabled" : "submit-btn"}

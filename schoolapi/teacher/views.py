@@ -8,8 +8,8 @@ from .serializers import (
     Teachersubjectserializer,
 )
 from django.contrib.auth.models import User
-
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +20,7 @@ from .serializers import Teacherserializer
 
 # ✅ GET: fetch users + designations
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def teacher_form_data(request):
     teachers = User.objects.filter(groups__name="Teacher")
     titles = Designation.objects.all()
@@ -54,6 +55,7 @@ def add_teacher(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def list_teacher(request):
     if request.method == "GET":
         teachers = Teacher.objects.all()
@@ -71,6 +73,7 @@ def list_teacher(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
 def teacher_detail(request, pk):
     try:
         teachers = Teacher.objects.get(pk=pk)
@@ -92,6 +95,7 @@ def teacher_detail(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def add_designation(request):
     if request.method == "POST":
         serializer = Designationserializer(data=request.data)
@@ -101,6 +105,7 @@ def add_designation(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def list_designation(request):
     if request.method == "GET":
         designations = Designation.objects.all()
@@ -109,6 +114,7 @@ def list_designation(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
 def designation_detail(request, pk):
     try:
         designations = Designation.objects.get(pk=pk)
@@ -129,6 +135,7 @@ def designation_detail(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def add_teachersubject(request):
     if request.method == "POST":
         serializer = Teachersubjectserializer(data=request.data)
@@ -140,6 +147,7 @@ def add_teachersubject(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def list_teachersubject(request):
     teachersubjects = Teachersubjects.objects.all()
     data = [
@@ -157,6 +165,7 @@ def list_teachersubject(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
 def teachersubject_detail(request, pk):
     try:
         teachersubjects = Teachersubjects.objects.get(pk=pk)
@@ -178,13 +187,10 @@ def teachersubject_detail(request, pk):
         return Response(data)
 
     elif request.method == "PUT":
-        # Pass the existing instance and the new data to update it
-        print(request.data)
         serializer = Teachersubjectserializer(teachersubjects, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        # Fixed typo: 'serilaizer' changed to 'serializer'
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
@@ -193,6 +199,7 @@ def teachersubject_detail(request, pk):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_unregister_teacher(request):
     teacher = User.objects.filter(groups__name="Teacher")
     teacher = [

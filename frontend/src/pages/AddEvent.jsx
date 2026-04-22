@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from "../components/api"
 
 function AddEvent() {
     const [newEvent, setNewEvent] = useState({ name: '', description: '', dateevents: '' });
@@ -8,7 +8,7 @@ function AddEvent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("http://127.0.0.1:8000/events/add_event/", newEvent)
+        api.post(`/events/add_event/`, newEvent)
             .then(res => {
                 alert("Event Created!");
                 navigate('/events/'); // Redirect to the list view after success

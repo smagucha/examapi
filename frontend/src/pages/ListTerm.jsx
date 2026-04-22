@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000"; 
+import api from '../components/api'; 
 
 function ListTerm() {
     const [terms, setTerms] = useState([]);
@@ -10,7 +8,7 @@ function ListTerm() {
 
     // 1. GET - Fetch all events
     useEffect(() => {
-        axios.get(`${BASE_URL}/result/list_term/`) 
+        api.get(`/result/list_term/`) 
             .then(res => {
                 setTerms(res.data);
                 setLoading(false);
@@ -25,7 +23,7 @@ function ListTerm() {
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this term?")) {
             // This hits your @api_view(["DELETE"]) def event_detail(request, pk)
-            axios.delete(`${BASE_URL}/result/detail_term/${id}/`)
+            api.delete(`/result/detail_term/${id}/`)
                 .then(() => {
                     // Update UI immediately by filtering out the deleted event
                     setTerms(terms.filter(term => term.id !== id));

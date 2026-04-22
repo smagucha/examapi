@@ -1,15 +1,13 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000";
+import api from "../components/api";
 
 function ListDesignation(){
 	const [designation, setDesignation] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		axios.get(`${BASE_URL}/teacher/list_designation/`)
+		api.get(`/teacher/list_designation/`)
 		.then(res => {
 			setDesignation(res.data);
 			setLoading(false);
@@ -21,7 +19,7 @@ function ListDesignation(){
 	}, []);
 	const handleDelete = (id) => {
 		if (window.confirm("Are you sure want to delete this designation?")) {
-			axios.delete(`${BASE_URL}/teacher/designation_detail/${id}/`)
+			api.delete(`/teacher/designation_detail/${id}/`)
 			.then(() => {
 				setDesignation(designation.filter(designation => designation.id !== id));
 				alert("stream deleted successfully");

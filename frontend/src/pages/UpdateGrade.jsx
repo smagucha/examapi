@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000"; 
+import api from "../components/api";
 
 function UpdateGrade() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -18,7 +16,7 @@ function UpdateGrade() {
 
     // 1. GET: Fetch existing data when the component loads
     useEffect(() => {
-        axios.get(`${BASE_URL}/result/detail_grade/${pk}/`)
+        api.get(`/result/detail_grade/${pk}/`)
             .then(res => {
                 setFormData(res.data);
                 setLoading(false);
@@ -32,7 +30,7 @@ function UpdateGrade() {
     // 2. PUT: Send updated data to Django
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`${BASE_URL}/result/detail_grade/${pk}/`, formData)
+        api.put(`/result/detail_grade/${pk}/`, formData)
             .then(res => {
                 alert("Event updated successfully!");
                 navigate('/gradelist'); // Redirect back to the list

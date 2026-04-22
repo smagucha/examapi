@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../components/api";
 
 // 1. Capitalize function name so React recognizes it as a component
 function Parent() {
@@ -8,10 +8,7 @@ function Parent() {
 
     useEffect(() => {
         setLoading(true);
-        
-        // 2. Add your full backend URL prefix here
-        const baseUrl = "http://localhost:8000/allparents/"; 
-        axios.get(baseUrl)
+        api.get(`/allparents/`)
             .then(res => {
                 // 3. Ensure we only set state if the response is an array
                 if (Array.isArray(res.data)) {

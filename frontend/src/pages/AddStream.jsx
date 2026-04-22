@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import api from "../components/api";
 
 function AddClass(){
 	const [newClass, setNewClass] = useState({name: ''});
 	const navigate = useNavigate();
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		axios.post("http://127.0.0.1:8000/add_class/", newClass)
+		api.post("http://127.0.0.1:8000/add_class/", newClass)
 		.then(res  => {
 			alert("class created!");
 			navigate('/liststream');

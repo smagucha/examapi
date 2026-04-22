@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../components/api";
 import { useNavigate } from "react-router-dom";
 
 export default function SelectClassSubjectEnrolled() {
@@ -17,13 +17,13 @@ export default function SelectClassSubjectEnrolled() {
 
   const navigate = useNavigate();
 
-  const API_URL = "http://127.0.0.1:8000/result/select_class_subject_enrolled/"; 
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setFetching(true);
-        const response = await axios.get(API_URL);
+        const response = await api.get(`/result/select_class_subject_enrolled/`);
 
         setClasses(response.data.classes || []);
         setStreams(response.data.streams || []);
@@ -52,7 +52,7 @@ export default function SelectClassSubjectEnrolled() {
     try {
       setLoading(true);
 
-      const response = await axios.post(API_URL, {
+      const response = await api.post(`/result/select_class_subject_enrolled/`, {
         selected_class: selectedClass,
         selected_stream: selectedStream || "",
         selected_subject: selectedSubject,

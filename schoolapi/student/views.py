@@ -12,6 +12,8 @@ from .serializers import (
 )
 from datetime import date, datetime
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 
 @api_view(["POST"])
@@ -293,6 +295,7 @@ def viewattendanceperstream(request, name, stream=None):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_all_parents(request):
     parents_with_students = Student.student.get_student_list()
     context = [
@@ -308,6 +311,7 @@ def get_all_parents(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def student_class(
     request,
     name,

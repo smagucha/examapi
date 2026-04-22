@@ -1,15 +1,13 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000";
+import api from "../components/api"
 
 function ListClass(){
     const [klass, setKlass] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/all_classes/`)
+        api.get(`/all_classes/`)
         .then(res => {
             setKlass(res.data);
             setLoading(false);
@@ -21,7 +19,7 @@ function ListClass(){
     }, []);
     const handleDelete = (id) => {
         if (window.confirm("Are you sure want to delete this classs?")) {
-            axios.delete(`${BASE_URL}/class_detail/${id}/`)
+            api.delete(`/class_detail/${id}/`)
             .then(() => {
                 setKlass(klasses.filter(klass => klass.id !== id));
                 alert("class deleted successfully");

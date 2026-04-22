@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from "../components/api";
 
 function AddTerm() {
     const [newTerm, setNewTerm] = useState({ name: ''});
@@ -8,7 +8,7 @@ function AddTerm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("http://127.0.0.1:8000/result/add_term/", newTerm)
+        axios.post(`/result/add_term/`, newTerm)
             .then(res => {
                 alert("Term Created!");
                 navigate('/listterm'); 

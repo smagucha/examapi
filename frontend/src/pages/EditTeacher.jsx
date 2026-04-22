@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import api from "../components/api";
 
 function EditTeacher() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
   const [error, setError] = useState("");
+  const [userName, setUserName] = useState("");
 
   const [formData, setFormData] = useState({
     user: "",
@@ -14,33 +17,36 @@ function EditTeacher() {
     gender: "",
   });
 
-  const [userName, setUserName] = useState("");
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return dateString.split("T")[0];
+  };
 
-  // ✅ Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch designations
-        const formRes = await axios.get(
-          "http://127.0.0.1:8000/teacher/form-data/"
-        );
-        setDesignations(formRes.data.designations);
+        const formRes = await api.get("/teacher/form-data/");
+        setDesignations(formRes.data.designations || []);
 
         // Fetch teacher
-        const teacherRes = await axios.get(
-          `http://127.0.0.1:8000/teacher/teacher_detail/${id}/`
-        );
-
+        const teacherRes = await api.get(`/teacher/teacher_detail/${id}/`);
         const teacher = teacherRes.data;
 
-        // ✅ USE DIRECT VALUE FROM BACKEND
+        console.log("Teacher:", teacher);
+
+        // ✅ USE user_name from backend
         setUserName(teacher.user_name || "Unknown");
 
-        // ✅ Set form data
+        // ✅ Keep user ID for submission
         setFormData({
           user: teacher.user || "",
-          date_of_appointment: teacher.date_of_appointment || "",
-          designation: teacher.designation || "",
+          date_of_appointment: formatDate(teacher.date_of_appointment),
+          designation:
+            typeof teacher.designation === "object"
+              ? teacher.designation.id
+              : teacher.designation || "",
           gender: teacher.gender || "",
         });
       } catch (err) {
@@ -52,31 +58,42 @@ function EditTeacher() {
     fetchData();
   }, [id]);
 
-  // ✅ Handle change
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // ✅ Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await axios.put(
-        `http://127.0.0.1:8000/teacher/teacher_detail/${id}/`,
-        formData
+      const payload = {
+        ...formData,
+        designation: Number(formData.designation),
+        user: Number(formData.user),
+      };
+
+      const response = await api.put(
+        `/teacher/teacher_detail/${id}/`,
+        payload
       );
 
       alert("Teacher updated successfully!");
-      console.log(response.data);
+       navigate(`/teacherlist`);
     } catch (err) {
       console.error(err);
+
       if (err.response?.data) {
-        setError(JSON.stringify(err.response.data));
+        setError(
+          typeof err.response.data === "object"
+            ? JSON.stringify(err.response.data, null, 2)
+            : err.response.data
+        );
       } else {
         setError("Update failed");
       }
@@ -87,7 +104,7 @@ function EditTeacher() {
     <div style={{ padding: "20px" }}>
       <h2>Edit Teacher</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <pre style={{ color: "red" }}>{error}</pre>}
 
       <form
         onSubmit={handleSubmit}
@@ -98,7 +115,7 @@ function EditTeacher() {
           maxWidth: "300px",
         }}
       >
-        {/* ✅ USER (READ ONLY) */}
+        {/* USER */}
         <label>Teacher</label>
         <input type="text" value={userName} readOnly />
 
@@ -113,7 +130,11 @@ function EditTeacher() {
 
         {/* Gender */}
         <label>Gender</label>
-        <select name="gender" value={formData.gender} onChange={handleChange}>
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={handleChange}
+        >
           <option value="">-- Select gender --</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>

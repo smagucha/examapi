@@ -2,16 +2,14 @@ import "../css/Home.css";
 import { Link } from "react-router-dom";
 import React ,{ useState, useEffect} from 'react';
 import {FaUserGraduate} from "react-icons/fa";
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000";
+import api from "../components/api";
 
 export default function Klasses() {
   const [klass, setKlass] = useState([]);
   const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/all_classes/`)
+        api.get(`/all_classes/`)
         .then(res => {
             setKlass(res.data);
             setLoading(false);

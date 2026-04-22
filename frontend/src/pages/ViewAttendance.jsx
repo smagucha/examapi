@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../components/api";
 import "../css/TakeAttendance.css";
 
 function ViewAttendance() {
@@ -13,8 +13,8 @@ function ViewAttendance() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/viewattendance/")
+    api
+      .get(`/viewattendance/`)
       .then((response) => {
         setData(response.data);
         setLoading(false);

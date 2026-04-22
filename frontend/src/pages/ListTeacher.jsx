@@ -1,15 +1,13 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000";
+import api from "../components/api";
 
 function ListTeacher(){
     const [teacher, setTeacher] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/teacher/list_teacher/`)
+        api.get(`/teacher/list_teacher/`)
         .then(res => {
             setTeacher(res.data);
             setLoading(false);
@@ -21,7 +19,7 @@ function ListTeacher(){
     }, []);
     const handleDelete = (id) => {
         if (window.confirm("Are you sure want to delete this classs?")) {
-            axios.delete(`${BASE_URL}/teacher/teacher_detail/${id}/`)
+            api.delete(`/teacher/teacher_detail/${id}/`)
             .then(() => {
                 setTeacher(teacher.filter(teacher => teacher.id !== id));
                 alert("teacher deleted successfully");

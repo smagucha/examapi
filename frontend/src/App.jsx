@@ -49,81 +49,89 @@ import EditTeacherSubject from "./pages/EditTeacherSubject";
 import EditTeacher from "./pages/EditTeacher";
 import Klasses from "./pages/Klasses";
 import StudentPerClassTream from "./pages/StudentPerClassTream";
-import AllUser from "./pages/AllUser"
+import AllUser from "./pages/AllUser";
+import AddClass from "./pages/AddClasses"
+import PrivateRoute from "./components/PrivateRoute";
+import Login from  "./components/Login";
+import { AuthProvider } from "./context/AuthContext";
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/users" element={<AllUser/>}/>
-        <Route path="/addteachersubject/" element={<AddTeacherSubject/>}/>
-        <Route path="/teachersubject/" element={<ListTeacherSubjects/>}/>
-        <Route path="/teacher/updateteachersubject/:id" element={<EditTeacherSubject/>}/>
-        <Route path="/addteacher" element={<AddTeacher/>}/>
-        <Route path="/teacher/updateteacher/:id/"element={<EditTeacher/>}/>
-        <Route path="/teachers" element={<TeacherSections/>}/>
-        <Route path="/teacherlist" element={<ListTeacher/>}/>
-        <Route path="/resultperclassterm/:name/:term/" element={<ClassStreamResult/>}/>
-        <Route path="/resultstreamterm/:name/:term/:stream/" element={<ClassStreamResult/>}/>>
-        <Route path="/results-per-class" element={<ResultStreamorTerm/>}/>
-        <Route path="/subject-ranking" element={<ClassSubjectRanking/>}/>
-        <Route path="/addesignation" element={<AddDesignation/>}/>
-        <Route path="/designations/" element={<ListDesignation/>}/>
+        
+        <Route path="/login" element={<Login/>} />
+        <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+        <Route path="/addclass" element={<PrivateRoute><AddClass/></PrivateRoute>} />
+        <Route path="/users" element={<PrivateRoute><AllUser/></PrivateRoute>}/>
+        <Route path="/addteachersubject/" element={<PrivateRoute><AddTeacherSubject/></PrivateRoute>}/>
+        <Route path="/teachersubject/" element={<PrivateRoute><ListTeacherSubjects/></PrivateRoute>}/>
+        <Route path="/teacher/updateteachersubject/:id" element={<PrivateRoute><EditTeacherSubject/></PrivateRoute>}/>
+        <Route path="/addteacher" element={<PrivateRoute><AddTeacher/></PrivateRoute>}/>
+        <Route path="/teacher/updateteacher/:id/"element={<PrivateRoute><EditTeacher/></PrivateRoute>}/>
+        <Route path="/teachers" element={<PrivateRoute><TeacherSections/></PrivateRoute>}/>
+        <Route path="/teacherlist" element={<PrivateRoute><ListTeacher/></PrivateRoute>}/>
+        <Route path="/resultperclassterm/:name/:term/" element={<PrivateRoute><ClassStreamResult/></PrivateRoute>}/>
+        <Route path="/resultstreamterm/:name/:term/:stream/" element={<PrivateRoute><ClassStreamResult/></PrivateRoute>}/>
+        <Route path="/results-per-class" element={<PrivateRoute><ResultStreamorTerm/></PrivateRoute>}/>
+        <Route path="/subject-ranking" element={<PrivateRoute><ClassSubjectRanking/></PrivateRoute>}/>
+        <Route path="/addesignation" element={<PrivateRoute><AddDesignation/></PrivateRoute>}/>
+        <Route path="/designations/" element={<PrivateRoute><ListDesignation/></PrivateRoute>}/>
         <Route path="/update-results" element={<SelectClasstreamResultUpdate/>}/>
         <Route path="/updateresult/:pk" element ={<UpdateResult/>} />
-        <Route path="/addterm" element={<AddTerm/>} />
-        <Route path="/liststream" element ={<ListStream/>} />
-        <Route path="/listclass" element={<ListClass />} />
-        <Route path="/Classes" element={<Klasses/>} />
-        <Route path="/Class/:name" element={<StudentPerClassTream/>} />
+        <Route path="/addterm" element={<PrivateRoute><AddTerm/></PrivateRoute>} />
+        <Route path="/liststream" element ={<PrivateRoute><ListStream/></PrivateRoute>} />
+        <Route path="/listclass" element={<PrivateRoute><ListClass /></PrivateRoute>} />
+        <Route path="/Classes" element={<PrivateRoute><Klasses/></PrivateRoute>}/>
+        <Route path="/Class/:name" element={<PrivateRoute><StudentPerClassTream/></PrivateRoute>}/>
         <Route path="/Class/:name/:stream" element={<StudentPerClassTream/>} />
-        <Route path="/parents" element={<Parent/>} />
-        <Route path="/subjectperrankstreamterm/:name/:stream/:term/:subject/" element={<SubjectPerRank/>}/>
+        <Route path="/parents" element={<PrivateRoute><Parent/></PrivateRoute>} />
+        <Route path="/subjectperrankstreamterm/:name/:stream/:term/:subject/" element={<PrivateRoute><SubjectPerRank/></PrivateRoute>}/>
         <Route path="/subjectperrankclass/:name/:term/:subject/" element={<SubjectPerRank/>}/>
-        <Route path="teacher/designation_detail/:pk"element={<UpdateDesignation/>}/>
+        <Route path="teacher/designation_detail/:pk"element={<PrivateRoute><UpdateDesignation/></PrivateRoute>}/>
         <Route path="/teachers" element={<h1>Teachers Page</h1>} />
-        <Route path="/SelectClassorStreamToEnrollSubject" element={<SelectClassorStreamToEnrollSubject/>}/>
-        <Route path="/events"  element={<EventList/>} />
-        <Route path="/result/studentenrolledsubjectsclass/:name/:subject/" element={<SubjectsEnrolledByStudent />} />
+        <Route path="/SelectClassorStreamToEnrollSubject" element={<PrivateRoute><SelectClassorStreamToEnrollSubject/></PrivateRoute>}/>
+        <Route path="/events"  element={<PrivateRoute><EventList/></PrivateRoute>} />
+        <Route path="/result/studentenrolledsubjectsclass/:name/:subject/" element={<PrivateRoute><SubjectsEnrolledByStudent /></PrivateRoute>} />
         <Route
           path="/result/studentenrolledsubjects/:name/:stream/:subject/"
-          element={<SubjectsEnrolledByStudent />}
+          element={<PrivateRoute><SubjectsEnrolledByStudent /></PrivateRoute>}
         />
-        <Route path="/subject_results_class/:name/:stream/:term/:subject" element ={<ResultForClassTreamPerSubject/>}/>
-        <Route path="/subject_results_class/:name/:term/:subject" element ={<ResultForClassTreamPerSubject/>}/>
-        <Route path="/enterexamforclass/:name/:term/:subject/" element={<EnterResult/>} />
-        <Route path="/enterexam/:name/:stream/:term/:subject/" element={<EnterResult/>}/>
-        <Route path="/enrollstudentstosubject/:name/:stream" element={<EnrollStudent/>}/>
-        <Route path="/enrollstudentstosubjectclass/:name" element={<EnrollStudent/>}/>
-        <Route path="/addstream" element={<AddStream />} />
-        <Route path="/addevent" element ={<AddEvent/>}/>
-        <Route path="/addgrade" element ={<AddGrade/>}/>
-        <Route path="/listterm" element ={<ListTerm/>}/>
-        <Route path='/updateterm/:pk' element={<UpdateTerm/>} />
-        <Route path='/updateclass/:pk' element={<UpdateClass/>} />
-         <Route path="/select-class-subject-enrolled" element={<SelectClassSubjectEnrolled />}/>
-        <Route path="/streamupdate/:pk" element={<UpdateStream/>}/>
-        <Route path="/updategrade/:pk" element={<UpdateGrade/>}/>
-        <Route path="/gradelist" element ={<GradeList/>}/>
-        <Route path="/addsubject" element ={<AddSubject/>}/>
-        <Route path="/subjectslist" element ={<SubjectsList/>}/>
-        <Route path="/subject/edit/:pk" element={<UpdateSubject />} />
-        <Route path="/events/edit/:pk" element={<EventUpdateForm />} />
-        <Route path="/take-attendance" element={<TakeAttendance/>} />
-        <Route path="/take_attendance/:name" element={<TakeAttendanceForStream />} />
+        <Route path="/subject_results_class/:name/:stream/:term/:subject" element ={<PrivateRoute><ResultForClassTreamPerSubject/></PrivateRoute>}/>
+        <Route path="/subject_results_class/:name/:term/:subject" element ={<PrivateRoute><ResultForClassTreamPerSubject/></PrivateRoute>}/>
+        <Route path="/enterexamforclass/:name/:term/:subject/" element={<PrivateRoute><EnterResult/></PrivateRoute>} />
+        <Route path="/enterexam/:name/:stream/:term/:subject/" element={<PrivateRoute><EnterResult/></PrivateRoute>}/>
+        <Route path="/enrollstudentstosubject/:name/:stream" element={<PrivateRoute><EnrollStudent/></PrivateRoute>}/>
+        <Route path="/enrollstudentstosubjectclass/:name" element={<PrivateRoute><EnrollStudent/></PrivateRoute>}/>
+        <Route path="/addstream" element={<PrivateRoute><AddStream /></PrivateRoute>} />
+        <Route path="/addevent" element ={<PrivateRoute><AddEvent/></PrivateRoute>}/>
+        <Route path="/addgrade" element ={<PrivateRoute><AddGrade/></PrivateRoute>}/>
+        <Route path="/listterm" element ={<PrivateRoute><ListTerm/></PrivateRoute>}/>
+        <Route path='/updateterm/:pk' element={<PrivateRoute><UpdateTerm/></PrivateRoute>} />
+        <Route path='/updateclass/:pk' element={<PrivateRoute><UpdateClass/></PrivateRoute>} />
+         <Route path="/select-class-subject-enrolled" element={<PrivateRoute><SelectClassSubjectEnrolled /></PrivateRoute>}/>
+        <Route path="/streamupdate/:pk" element={<PrivateRoute><UpdateStream/></PrivateRoute>}/>
+        <Route path="/updategrade/:pk" element={<PrivateRoute><UpdateGrade/></PrivateRoute>}/>
+        <Route path="/gradelist" element ={<PrivateRoute><GradeList/></PrivateRoute>}/>
+        <Route path="/addsubject" element ={<PrivateRoute><AddSubject/></PrivateRoute>}/>
+        <Route path="/subjectslist" element ={<PrivateRoute><SubjectsList/></PrivateRoute>}/>
+        <Route path="/subject/edit/:pk" element={<PrivateRoute><UpdateSubject /></PrivateRoute>} />
+        <Route path="/events/edit/:pk" element={<PrivateRoute><EventUpdateForm /></PrivateRoute>} />
+        <Route path="/take-attendance" element={<PrivateRoute><TakeAttendance/></PrivateRoute>} />
+        <Route path="/take_attendance/:name" element={<PrivateRoute><TakeAttendanceForStream /></PrivateRoute>} />
         <Route path="/take_attendance_for_stream/:name/:stream" element={<TakeAttendanceForStream />} />
-        <Route path="/view-attendance" element={<ViewAttendance />} />
-        <Route path="/viewattendanceperclass/:name" element={<ViewAttendancePerClassStream />}/>
+        <Route path="/view-attendance" element={<PrivateRoute><ViewAttendance /></PrivateRoute>} />
+        <Route path="/viewattendanceperclass/:name" element={<PrivateRoute><ViewAttendancePerClassStream /></PrivateRoute>}/>
         <Route path="/viewattendanceperclass/:name/:stream" element={<ViewAttendancePerClassStream/>}/>
-        <Route path="/enter-result" element={<EnterResultSelector/>} />
+        <Route path="/enter-result" element={<PrivateRoute><EnterResultSelector/></PrivateRoute>} />
         <Route path="/update-results" element={<h1>Update Results</h1>} />
         <Route path="/subject-ranking" element={<h1>Subject Ranking</h1>} />
         <Route path="/results-per-class" element={<h1>Results Per Class</h1>} />
         <Route path="/class-ranking" element={<h1>Class Ranking</h1>} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 

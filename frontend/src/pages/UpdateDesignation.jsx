@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://127.0.0.1:8000"; 
+import api from "../components/api"; 
 
 function UpdateDesignation() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -16,7 +14,7 @@ function UpdateDesignation() {
 
     // 1. GET: Fetch existing data when the component loads
     useEffect(() => {
-        axios.get(`${BASE_URL}/teacher/designation_detail/${pk}/`)
+        api.get(`/teacher/designation_detail/${pk}/`)
             .then(res => {
                 setFormData(res.data);
                 setLoading(false);
@@ -30,7 +28,7 @@ function UpdateDesignation() {
     // 2. PUT: Send updated data to Django
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`${BASE_URL}/teacher/designation_detail/${pk}/`, formData)
+        api.put(`/teacher/designation_detail/${pk}/`, formData)
             .then(res => {
                 alert("designation updated successfully!");
                 navigate('/designations/'); // Redirect back to the list

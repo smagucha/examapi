@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {useNavigate, useParams} from 'react-router-dom';
 import "../css/TakeAttendance.css";
-
+import api from "../components/api";
+import ReusableSelect from "../components/ReusableSelect";
 function EditTeacherSubject() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -21,29 +21,35 @@ function EditTeacherSubject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const TeacherResponse = await axios.get(
-          `http://127.0.0.1:8000/teacher/teachersubject_detail/${id}/`
+        const TeacherResponse = await api.get(
+          `/teacher/teachersubject_detail/${id}/`
         );
-        const SubjectResponse = await axios.get(
-          "http://127.0.0.1:8000/result/list_subjects/"
+        const SubjectResponse = await api.get(
+          `/result/list_subjects/`
         );
-        const ClassResponse = await axios.get(
-          `http://127.0.0.1:8000/all_classes/`
+        const ClassResponse = await api.get(
+          `/all_classes/`
         );
-        const StreamResponse = await axios.get(
-          "http://127.0.0.1:8000/stream_list/"
+        const StreamResponse = await api.get(
+          `/stream_list/`
         );
+        const teacherinfo = TeacherResponse.data;
+        // console.log(teacherinfo.teacher);
         setTeacher(TeacherResponse.data);
         setSubject(SubjectResponse.data);
         setClass(ClassResponse.data);
         setStream(StreamResponse.data);
-        console.log(TeacherResponse.data)
-
+        setFormData({
+          teacher: teacherinfo.teacher,
+          Subject: teacherinfo.subject,
+          Class: teacherinfo.Class,
+          stream: teacherinfo.stream,
+        });
       } catch (err) {
         console.error("Error fetching data:", err);
       }
     };
-
+    console.log("form data", formData);
     fetchData();
   }, []);
   // Handle input change
@@ -59,14 +65,14 @@ function EditTeacherSubject() {
     e.preventDefault();
 
     try {
-      const response = await axios.put(
-        `http://127.0.0.1:8000/teacher/teachersubject_detail/${id}/`,
+      const response = await api.put(
+        `/teacher/teachersubject_detail/${id}/`,
         formData
       );
       alert("Teacher information updated saved successfully!");
       navigate('/teachersubject/');
     } catch (err) {
-      console.error("Axios post error:", err.response?.data || err.message);
+      console.error("api post error:", err.response?.data || err.message);
       alert("Error: " + JSON.stringify(err.response?.data));
     }
   };

@@ -1,12 +1,12 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
+import api from "../components/api";
 function Alluser(){
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/useraccount/allusers/`)
+        api.get(`/useraccount/allusers/`)
         .then(res => {
             setUser(res.data);
             setLoading(false);

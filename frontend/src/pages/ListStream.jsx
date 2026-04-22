@@ -1,15 +1,13 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-
-const BASE_URL = "http://localhost:8000";
+import api from "../components/api";
 
 function ListStream(){
 	const [streams, setStreams] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		axios.get(`${BASE_URL}/stream_list/`)
+		api.get(`/stream_list/`)
 		.then(res => {
 			setStreams(res.data);
 			setLoading(false);
@@ -21,7 +19,7 @@ function ListStream(){
 	}, []);
 	const handleDelete = (id) => {
 		if (window.confirm("Are you sure want to delete this stream?")) {
-			axios.delete(`${BASE_URL}/stream/${id}/`)
+			api.delete(`/stream/${id}/`)
 			.then(() => {
 				setStreams(streams.filter(stream => stream.id !== id));
 				alert("stream deleted successfully");

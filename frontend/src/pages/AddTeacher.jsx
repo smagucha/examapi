@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import {useNavigate} from 'react-router-dom';
 import "../css/TakeAttendance.css";
+import api from "../components/api"
 
 function AddTeacher() {
   const [users, setUsers] = useState([]);
   const [designations, setDesignations] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     user: "",
@@ -16,8 +18,7 @@ function AddTeacher() {
 
   // ✅ Fetch form data
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/teacher/form-data/")
+      api.get(`/teacher/form-data/`)
       .then((res) => {
         setUsers(res.data.teachers);
         setDesignations(res.data.designations);
@@ -42,12 +43,13 @@ function AddTeacher() {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/teacher/add_teacher/",
+      const response = await api.post(
+        `/teacher/add_teacher/`,
         formData
       );
 
       alert(response.data.message);
+      navigate('/teacherlist');
 
       // Reset form
       setFormData({
