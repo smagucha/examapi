@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../components/api";
 import { useParams, useNavigate } from 'react-router-dom'; 
 import "../css/TakeAttendance.css";
+import Navbar from "../components/NavBar";
 
 function UpdateTeacher() {
   const { pk } = useParams();
@@ -59,8 +60,14 @@ function UpdateTeacher() {
   };
   return (
     <div style={{ padding: "20px" }}>
+       <Navbar 
+              user={{ username: "sammy" }}
+              onLogout={() => {
+              localStorage.clear();
+              window.location.href = "/login";
+              }} 
+            />
       <h2>Add New Teacher</h2>
-
       <form
         onSubmit={handleSubmit}
         style={{

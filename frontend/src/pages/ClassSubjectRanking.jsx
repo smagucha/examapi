@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/TakeAttendance.css";
 import api from "../components/api";
+import SelectReusable from "../components/SelectReusable";
+import Navbar from "../components/NavBar";
 
 function ClassSubjectRanking() {
   const navigate = useNavigate();
@@ -66,10 +68,18 @@ function ClassSubjectRanking() {
   }
 
   return (
+    <div>
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
     <div className="take-attendance-container">
       <div className="take-attendance-card">
         <div className="take-attendance-header">
-          <h2 className="take-attendance-title">📋 enter result</h2>
+          <h2 className="take-attendance-title">📋 view subject ranking</h2>
           <p className="take-attendance-subtitle">
             Select class and optional stream
           </p>
@@ -78,82 +88,36 @@ function ClassSubjectRanking() {
         {errorMessage && (
           <div className="error-message">⚠ {errorMessage}</div>
         )}
-
         <form onSubmit={handleSubmit} className="take-attendance-form">
-          <div className="form-group">
-            <label className="form-label">
-              Class <span className="required">*</span>
-            </label>
-            <select
-              name="class"
-              value={formData.class}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select Class</option>
-              {data?.classes?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Stream (Optional)</label>
-            <select
-              name="stream"
-              value={formData.stream}
-              onChange={handleChange}
-              className="form-select"
-            >
-              <option value="">Select Stream</option>
-              {data?.streams?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-           <div className="form-group">
-            <label className="form-label">
-              subject <span className="required">*</span>
-            </label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select subject</option>
-              {data?.subjects?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">
-              term <span className="required">*</span>
-            </label>
-            <select
-              name="term"
-              value={formData.term}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select term</option>
-              {data?.terms?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
+         
+          <SelectReusable 
+            label="Class"
+            name="class"
+            options={data.classes}
+            value={formData.class}
+            onChange={handleChange}
+          />
+           <SelectReusable 
+            label="Stream (Optional)"
+            name="stream"
+            options={data.streams}
+            value={formData.stream}
+            onChange={handleChange}
+          />
+           <SelectReusable 
+            label="subject"
+            name="subject"
+            options={data.subjects}
+            value={formData.subjects}
+            onChange={handleChange}
+          />
+           <SelectReusable 
+            label="term"
+            name="term"
+            options={data.terms}
+            value={formData.term}
+            onChange={handleChange}
+          />
           <button
             type="submit"
             className={submitting ? "submit-btn disabled" : "submit-btn"}
@@ -164,7 +128,10 @@ function ClassSubjectRanking() {
         </form>
       </div>
     </div>
+  </div>
   );
 }
 
 export default ClassSubjectRanking;
+
+// https://www.youtube.com/watch?v=MrZDAYnCBYM

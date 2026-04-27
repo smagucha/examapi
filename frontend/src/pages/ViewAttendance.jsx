@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendance.css";
+import SelectReusable from "../components/SelectReusable";
+import Navbar from "../components/NavBar"
 
 function ViewAttendance() {
   const navigate = useNavigate();
@@ -66,6 +68,14 @@ function ViewAttendance() {
   }
 
   return (
+    <div>
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+        />
     <div className="take-attendance-container">
       <div className="take-attendance-card">
         <div className="take-attendance-header">
@@ -80,42 +90,20 @@ function ViewAttendance() {
         )}
 
         <form onSubmit={handleSubmit} className="take-attendance-form">
-          <div className="form-group">
-            <label className="form-label">
-              Class <span className="required">*</span>
-            </label>
-            <select
-              name="class"
-              value={formData.class}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select Class</option>
-              {data?.classes?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Stream (Optional)</label>
-            <select
-              name="stream"
-              value={formData.stream}
-              onChange={handleChange}
-              className="form-select"
-            >
-              <option value="">Select Stream</option>
-              {data?.streams?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectReusable 
+            label="Class"
+            name="class"
+            options={data.classes}
+            value={formData.class}
+            onChange={handleChange}
+          />
+           <SelectReusable 
+            label="Stream (Optional)"
+            name="stream"
+            options={data.streams}
+            value={formData.stream}
+            onChange={handleChange}
+          />
 
           <button
             type="submit"
@@ -127,6 +115,7 @@ function ViewAttendance() {
         </form>
       </div>
     </div>
+  </div>
   );
 }
 

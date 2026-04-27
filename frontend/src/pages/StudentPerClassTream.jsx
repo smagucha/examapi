@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import "../css/Home.css";
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 function StudentPerClassTream() {
     const { name, stream } = useParams();
     const [student, setStudent] = useState([]);
@@ -49,7 +50,14 @@ function StudentPerClassTream() {
     if (loading) return <p>Loading student...</p>;
     return (
         <div style={{ padding: '20px' }}>
-               {/* Only display the stream container if there are streams available */}
+             <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
+        {/* Only display the stream container if there are streams available */}
         {streams.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <p>to view students per stream you can click the streams button</p>

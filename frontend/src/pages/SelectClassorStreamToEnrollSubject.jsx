@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendance.css";
 import SelectReusable from "../components/SelectReusable";
+import Navbar from "../components/NavBar";
 
 function SelectClassorStreamToEnrollSubject() {
   const navigate = useNavigate();
@@ -67,6 +68,14 @@ function SelectClassorStreamToEnrollSubject() {
   }
 
   return (
+    <div>
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+      />
     <div className="take-attendance-container">
       <div className="take-attendance-card">
         <div className="take-attendance-header">
@@ -81,25 +90,6 @@ function SelectClassorStreamToEnrollSubject() {
         )}
 
         <form onSubmit={handleSubmit} className="take-attendance-form">
-          {/*<div className="form-group">
-            <label className="form-label">
-              Class <span className="required">*</span>
-            </label>
-            <select
-              name="class"
-              value={formData.class}
-              onChange={handleChange}
-              className="form-select"
-              required
-            >
-              <option value="">Select Class</option>
-              {data?.classes?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>*/}
             <SelectReusable 
             label="Class"
             name="class"
@@ -107,24 +97,6 @@ function SelectClassorStreamToEnrollSubject() {
             value={formData.class}
             onChange={handleChange}
           />
-
-          {/*<div className="form-group">
-            <label className="form-label">Stream (Optional)</label>
-            <select
-              name="stream"
-              value={formData.stream}
-              onChange={handleChange}
-              className="form-select"
-            >
-              <option value="">Select Stream</option>
-              {data?.streams?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-         */}
            <SelectReusable 
             label="Stream (Optional)"
             name="stream"
@@ -142,6 +114,7 @@ function SelectClassorStreamToEnrollSubject() {
         </form>
       </div>
     </div>
+  </div>
   );
 }
 

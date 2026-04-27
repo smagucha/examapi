@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 export default function EnrollStudentsToSubject() {
   const { name, stream } = useParams();
@@ -69,6 +70,13 @@ export default function EnrollStudentsToSubject() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
       <div className="max-w-5xl mx-auto">
           <form onSubmit={handleSubmit} className="bg-white shadow rounded">
           <table className="w-full border-collapse">

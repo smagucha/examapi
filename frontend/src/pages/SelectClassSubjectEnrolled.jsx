@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/NavBar";
 
 export default function SelectClassSubjectEnrolled() {
   const [classes, setClasses] = useState([]);
@@ -77,6 +78,13 @@ export default function SelectClassSubjectEnrolled() {
 
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+      />
       <h2 className="text-2xl font-bold mb-6 text-center">
         Select Class, Stream & Subject
       </h2>

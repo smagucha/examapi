@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { useParams } from "react-router-dom";
+import Navbar from "../components/NavBar";
 
 export default function SubjectsEnrolledByStudent() {
   const { name, subject, stream } = useParams();
@@ -60,6 +61,13 @@ export default function SubjectsEnrolledByStudent() {
     <div className="max-w-6xl mx-auto mt-8 p-4">
       {/* Header Card */}
       <div className="bg-white shadow-lg rounded-2xl p-6 mb-6">
+         <Navbar 
+            user={{ username: "sammy" }}
+            onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+            }} 
+        />
         <h1 className="text-3xl font-bold mb-4 text-gray-800">
           Enrolled Students
         </h1>

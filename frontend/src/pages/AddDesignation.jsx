@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styles from '../css/AddDesignation.module.css';
+import Navbar from "../components/Navbar";
 
 function AddDesignation() {
     const [newDesignation, setNewDesignation] = useState({ title: '' });
@@ -41,6 +42,13 @@ function AddDesignation() {
 
     return (
         <div className={styles.container}>
+        <Navbar 
+            user={{ username: "sammy" }}
+            onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+            }} 
+        />
             <div className={styles.card}>
                 <div className={styles.header}>
                     <h2 className={styles.title}>Add New Designation</h2>

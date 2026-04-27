@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom';
 import "../css/TakeAttendance.css";
-import api from "../components/api"
+import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 function AddTeacher() {
   const [users, setUsers] = useState([]);
@@ -71,6 +72,13 @@ function AddTeacher() {
 
   return (
     <div style={{ padding: "20px" }}>
+      <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+        }} 
+      />
       <h2>Add New Teacher</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 // 1. Capitalize function name so React recognizes it as a component
 function Parent() {
@@ -30,6 +31,13 @@ function Parent() {
 
     return (
         <div style={{ padding: '20px' }}>
+            <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <h2>Parents</h2>
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>

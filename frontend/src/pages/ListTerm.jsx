@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../components/api'; 
+import Navbar from "../components/NavBar";
 
 function ListTerm() {
     const [terms, setTerms] = useState([]);
@@ -40,6 +41,13 @@ function ListTerm() {
 
     return (
         <div style={{ padding: '20px' }}>
+            <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>terms</h2>
                 <Link to="/addterm">

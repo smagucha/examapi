@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendanceForStream.css";
-
+import Navbar from "../components/NavBar";
 function TakeAttendanceForStream() {
   const { name, stream } = useParams();
 
@@ -98,6 +98,14 @@ function TakeAttendanceForStream() {
   }
 
   return (
+    <div>
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+        />
     <div className="attendance-page">
       <div className="attendance-card">
         <div className="attendance-header">
@@ -194,6 +202,7 @@ function TakeAttendanceForStream() {
         </form>
       </div>
     </div>
+  </div>
   );
 }
 

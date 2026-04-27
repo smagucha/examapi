@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 // 1. Capitalize function name so React recognizes it as a component
 function SubjectPerRank() {
@@ -31,11 +32,18 @@ function SubjectPerRank() {
                 setLoading(false);
                 setSubjectresultsData([]); // Clear data on error
             });
-    }, [name, stream]);
+    }, [name, term, subject, stream]);
 
     if (loading) return <p>Loading subject ranking...</p>;
     return (
         <div style={{ padding: '20px' }}>
+             <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <h2>subject ranking for {name} {stream ? `(${stream} Stream)` : '(Full Class)'}</h2>
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>

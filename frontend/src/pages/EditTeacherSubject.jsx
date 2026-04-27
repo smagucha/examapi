@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import "../css/TakeAttendance.css";
 import api from "../components/api";
 import ReusableSelect from "../components/ReusableSelect";
+import Navbar from "../components/NaVBar";
 function EditTeacherSubject() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -78,8 +79,14 @@ function EditTeacherSubject() {
   };
   return (
     <div style={{ padding: "20px" }}>
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
       <h2>Add New Teacher</h2>
-
       <form
         onSubmit={handleSubmit}
         style={{
@@ -97,7 +104,7 @@ function EditTeacherSubject() {
         />
 
         {/* subject */}
-        <label>subject</label>
+        {/*<label>subject</label>
         <select
           name="Subject"
           value={formData.Subject}
@@ -110,10 +117,16 @@ function EditTeacherSubject() {
           {s.name}
           </option>
             ))}
-        </select>
-
+        </select>*/}
+        <ReusableSelect 
+            label="subject"
+            name="subject"
+            options={data.subjects}
+            value={formData.subjects}
+            onChange={handleChange}
+          />
         {/* classes */}
-    <label>Classes</label>
+    {/*<label>Classes</label>
         <select
           name="Class"
           value={formData.Class}
@@ -126,7 +139,14 @@ function EditTeacherSubject() {
           {c.name}
           </option>
             ))}
-        </select>
+        </select>*/}
+        <ReusableSelect 
+            label="Class"
+            name="class"
+            options={data.classes}
+            value={formData.class}
+            onChange={handleChange}
+          />
 
         {/* stream */}
         <label>stream</label>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 function AddTerm() {
     const [newTerm, setNewTerm] = useState({ name: ''});
@@ -17,6 +18,13 @@ function AddTerm() {
     };
     return (
         <div style={{ padding: '20px' }}>
+        <Navbar 
+            user={{ username: "sammy" }}
+            onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+            }} 
+        />
             <h2>Add term</h2>
             <form onSubmit={handleSubmit}>
               

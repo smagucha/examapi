@@ -1,6 +1,7 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 function ListTeacher(){
     const [teacher, setTeacher] = useState([]);
@@ -33,6 +34,13 @@ function ListTeacher(){
     if (loading ) return <p> Loading teachers ...</p>;
     return (
         <div style={{ padding: '20px' }}>
+             <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> teachers</h2>
                 <Link to="/addteacher">

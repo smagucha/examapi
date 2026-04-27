@@ -16,6 +16,7 @@ import {
   FaTrophy,
   FaCog,
 } from "react-icons/fa";
+import Navbar from "../components/NavBar";
 
 export default function Settings() {
   const cards = [
@@ -31,7 +32,13 @@ export default function Settings() {
   return (
     
     <div className="home-container">
-
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+      />
       <div className="card-grid">
         {cards.map((card, index) => (
           <Link to={card.path} className="card-link" key={index}>

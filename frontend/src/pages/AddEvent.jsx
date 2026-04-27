@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from "../components/api"
+import api from "../components/api";
+import Navbar from "../components/Navbar";
+
 
 function AddEvent() {
     const [newEvent, setNewEvent] = useState({ name: '', description: '', dateevents: '' });
@@ -18,6 +20,13 @@ function AddEvent() {
 
     return (
         <div style={{ padding: '20px' }}>
+        <Navbar 
+            user={{ username: "sammy" }}
+            onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+            }} 
+        />
             <h2>Add New School Event</h2>
             <form onSubmit={handleSubmit}>
                 <input 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import api from "../components/api";
-
+import Navbar from "../components/NavBar";
 
 function UpdateSubject(){
 	const {pk} = useParams();
@@ -39,6 +39,13 @@ function UpdateSubject(){
 	if (loading) return <p> Loading subject data ...</p>
 		return (
 		<div style={{ padding: '20px', maxWidth: '500px' }}>
+			 <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <h2>Edit Event #{pk}</h2>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '10px' }}>

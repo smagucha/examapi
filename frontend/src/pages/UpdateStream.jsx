@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from "../components/api";
+import NavBar from "../components/NavBar";
 
 function UpdateStream() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -43,6 +44,13 @@ function UpdateStream() {
 
     return (
         <div style={{ padding: '20px', maxWidth: '500px' }}>
+             <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <h2>Edit stream #{pk}</h2>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '10px' }}>

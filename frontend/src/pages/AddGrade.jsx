@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from "../components/api"
+import api from "../components/api";
+import Navbar from "../components/Navbar";
 
 function AddGrade() {
     const [newGrade, setNewGrade] = useState({ percent: '', name: '', points: '' });
@@ -17,6 +18,13 @@ function AddGrade() {
     };
     return (
         <div style={{ padding: '20px' }}>
+        <Navbar 
+            user={{ username: "sammy" }}
+            onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+            }} 
+        />
             <h2>Add Grade</h2>
             <form onSubmit={handleSubmit}>
                 <input 

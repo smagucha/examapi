@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import api from "../components/api";
-
+import Navbar from "../components/NavBar";
 // 1. Capitalize function name so React recognizes it as a component
 function ClassStreamResult() {
     const { name, stream, term } = useParams(); 
@@ -35,6 +35,13 @@ function ClassStreamResult() {
     console.log(ResultData)
     return (
         <div style={{ padding: '20px' }}>
+            <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <h2>subject results for {name} {stream ? `(${stream} Stream)` : '(Full Class)'}</h2>
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>

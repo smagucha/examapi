@@ -1,6 +1,7 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 function Alluser(){
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,6 +21,13 @@ function Alluser(){
     if (loading ) return <p> Loading users ...</p>;
     return (
         <div style={{ padding: '20px' }}>
+            <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f2f2f2' }}>

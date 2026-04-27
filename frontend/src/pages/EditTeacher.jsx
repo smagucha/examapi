@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import api from "../components/api";
-
+import ReusableSelect from "../components/ReusableSelect";
+import Navbar from "../components/NavBar";
 function EditTeacher() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,8 +34,6 @@ function EditTeacher() {
         // Fetch teacher
         const teacherRes = await api.get(`/teacher/teacher_detail/${id}/`);
         const teacher = teacherRes.data;
-
-        console.log("Teacher:", teacher);
 
         // ✅ USE user_name from backend
         setUserName(teacher.user_name || "Unknown");
@@ -102,6 +101,13 @@ function EditTeacher() {
 
   return (
     <div style={{ padding: "20px" }}>
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
       <h2>Edit Teacher</h2>
 
       {error && <pre style={{ color: "red" }}>{error}</pre>}
@@ -129,32 +135,28 @@ function EditTeacher() {
         />
 
         {/* Gender */}
-        <label>Gender</label>
+        <div className="form-group">
+        <label className="form-label">Gender</label>
         <select
           name="gender"
           value={formData.gender}
           onChange={handleChange}
+          className="form-select"
         >
           <option value="">-- Select gender --</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
+      </div>
 
         {/* Designation */}
-        <label>Designation</label>
-        <select
+       <ReusableSelect 
+          label="Designation"
           name="designation"
+          options={designations}
           value={formData.designation}
           onChange={handleChange}
-        >
-          <option value="">-- Select designation --</option>
-          {designations.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.title}
-            </option>
-          ))}
-        </select>
-
+        />
         <button type="submit">Update</button>
       </form>
     </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  useParams } from "react-router-dom";
 import api from "../components/api";
 import "../css/MarksEntryTable.css";
+import Navbar from "../components/NavBar";
 
 const EnterResult = () => {
   const { name, term, subject, stream} = useParams();
@@ -98,6 +99,13 @@ const EnterResult = () => {
 
   return (
     <div className="marks-entry-container">
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
       <div className="marks-card">
         {/* Header */}
         <div className="marks-header">

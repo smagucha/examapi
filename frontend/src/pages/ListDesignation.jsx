@@ -1,6 +1,7 @@
 import React ,{ useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import api from "../components/api";
+import Navbar from "../components/NavBar";
 
 function ListDesignation(){
 	const [designation, setDesignation] = useState([]);
@@ -33,6 +34,13 @@ function ListDesignation(){
 	if (loading ) return <p> Loading stream ...</p>;
 	return (
 		<div style={{ padding: '20px' }}>
+            <Navbar 
+                user={{ username: "sammy" }}
+                onLogout={() => {
+                localStorage.clear();
+                window.location.href = "/login";
+                }} 
+            />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> designations</h2>
                 <Link to="/addesignation">

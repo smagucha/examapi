@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import "../css/TakeAttendance.css";
 import api from "../components/api";
 import ReusableSelect from "../components/ReusableSelect";
+import Navbar from "../components/NavBar";
 
 function AddTeacherSubject() {
   const navigate = useNavigate();
@@ -70,8 +71,14 @@ function AddTeacherSubject() {
   };
   return (
     <div style={{ padding: "20px" }}>
+      <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+        }} 
+      />
       <h2>Add New Teacher</h2>
-
       <form
         onSubmit={handleSubmit}
         style={{

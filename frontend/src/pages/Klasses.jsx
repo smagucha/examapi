@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import React ,{ useState, useEffect} from 'react';
 import {FaUserGraduate} from "react-icons/fa";
 import api from "../components/api";
-
+import Navbar from "../components/NavBar";
 export default function Klasses() {
   const [klass, setKlass] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,8 +23,14 @@ export default function Klasses() {
   return (
     
     <div className="home-container">
+       <Navbar 
+        user={{ username: "sammy" }}
+        onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+        }} 
+      />
       <div className="card-grid">
-
          {klass.length > 0 ? (
           klass.map((klass) => (
           <Link to={`/Class/${klass.name}/`} className="card-link" key={klass.id}>

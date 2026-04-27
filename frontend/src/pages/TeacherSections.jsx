@@ -6,6 +6,7 @@ import {
   FaChalkboardTeacher,
 
 } from "react-icons/fa";
+import Navbar from "../components/NavBar";
 
 export default function TeacherSections() {
   const cards = [
@@ -16,7 +17,13 @@ export default function TeacherSections() {
   return (
     
     <div className="home-container">
-
+       <Navbar 
+          user={{ username: "sammy" }}
+          onLogout={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }} 
+        />
       <div className="card-grid">
         {cards.map((card, index) => (
           <Link to={card.path} className="card-link" key={index}>
