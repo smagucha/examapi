@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendance.css";
 import SelectReusable from "../components/SelectReusable";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 function SelectClassorStreamToEnrollSubject() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ function SelectClassorStreamToEnrollSubject() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const {auth} = useContext(AuthContext);
   useEffect(() => {
     api
       .get(`/result/enroll_students_to_student/`)
@@ -70,7 +71,7 @@ function SelectClassorStreamToEnrollSubject() {
   return (
     <div>
        <Navbar 
-          user={{ username: "sammy" }}
+          user={auth.user}
           onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";

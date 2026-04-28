@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/Navbar";
-
+import {AuthContext} from "../context/AuthContext"
 
 function AddEvent() {
     const [newEvent, setNewEvent] = useState({ name: '', description: '', dateevents: '' });
     const navigate = useNavigate();
-
+    const {auth} = useContext(AuthContext);
     const handleSubmit = (e) => {
         e.preventDefault();
         api.post(`/events/add_event/`, newEvent)
@@ -21,7 +21,7 @@ function AddEvent() {
     return (
         <div style={{ padding: '20px' }}>
         <Navbar 
-            user={{ username: "sammy" }}
+            user={auth.user}
             onLogout={() => {
             localStorage.clear();
             window.location.href = "/login";

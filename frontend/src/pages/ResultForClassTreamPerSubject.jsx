@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom';
 import api from "../components/api";
 import { Link } from 'react-router-dom';
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 // 1. Capitalize function name so React recognizes it as a component
 function ResultForClassTreamPerSubject() {
     const { name, stream, subject, term } = useParams(); 
     const [SubjectResultData, setSubjectResultData] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     useEffect(() => {
         setLoading(true);
     
@@ -40,7 +40,7 @@ function ResultForClassTreamPerSubject() {
     return (
         <div style={{ padding: '20px' }}>
              <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

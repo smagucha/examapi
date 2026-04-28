@@ -1,13 +1,14 @@
 import "../css/Home.css";
 import { Link } from "react-router-dom";
-import React ,{ useState, useEffect} from 'react';
+import { useState, useEffect, useContext} from 'react';
 import {FaUserGraduate} from "react-icons/fa";
 import api from "../components/api";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 export default function Klasses() {
   const [klass, setKlass] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const {auth} = useContext(AuthContext);
     useEffect(() => {
         api.get(`/all_classes/`)
         .then(res => {
@@ -24,7 +25,7 @@ export default function Klasses() {
     
     <div className="home-container">
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

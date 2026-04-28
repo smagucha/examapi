@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/Navbar";
+import {AuthContext} from "../context/AuthContext"
 
 function AddGrade() {
     const [newGrade, setNewGrade] = useState({ percent: '', name: '', points: '' });
     const navigate = useNavigate();
-
+    const {Auth} = useContext(AuthContext)
     const handleSubmit = (e) => {
         e.preventDefault();
         api.post(`/result/add_grade/`, newGrade)
@@ -19,7 +20,7 @@ function AddGrade() {
     return (
         <div style={{ padding: '20px' }}>
         <Navbar 
-            user={{ username: "sammy" }}
+            user={auth.user}
             onLogout={() => {
             localStorage.clear();
             window.location.href = "/login";

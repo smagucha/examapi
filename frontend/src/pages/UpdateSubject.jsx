@@ -1,16 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 function UpdateSubject(){
 	const {pk} = useParams();
 	const navigate = useNavigate();
-
 	const [formData, setFormData] = useState({
 		name: "",
 		code: "",
 	});
+	const {auth} = useContext(AuthContext);
 	const [loading, setLoading] = useState(true)
 
 	useEffect (()=>{
@@ -40,7 +40,7 @@ function UpdateSubject(){
 		return (
 		<div style={{ padding: '20px', maxWidth: '500px' }}>
 			 <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

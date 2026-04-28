@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 // 1. Capitalize function name so React recognizes it as a component
 function ViewAttendancePerClass() {
     const { name, stream } = useParams(); 
     const [attendanceData, setAttendanceData] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     useEffect(() => {
         setLoading(true);
         
@@ -40,7 +40,7 @@ function ViewAttendancePerClass() {
     return (
         <div style={{ padding: '20px' }}>
              <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

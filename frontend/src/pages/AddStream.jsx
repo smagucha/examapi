@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
+import {useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 function AddClass(){
 	const [newClass, setNewClass] = useState({name: ''});
 	const navigate = useNavigate();
+	const {auth} = useContext(AuthContext);
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		api.post("http://127.0.0.1:8000/add_class/", newClass)
@@ -18,7 +20,7 @@ function AddClass(){
 	return(
 		<div style={{ padding: '20px' }}>
 		<Navbar 
-        	user={{ username: "sammy" }}
+        	user={auth.user}
         	onLogout={() => {
           	localStorage.clear();
           	window.location.href = "/login";

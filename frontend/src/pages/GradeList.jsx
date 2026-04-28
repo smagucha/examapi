@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
-
-const BASE_URL = "http://localhost:8000"; 
+import { AuthContext } from "../context/AuthContext";
 
 function GradeList() {
     const [grades, setGrades] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     // 1. GET - Fetch all events
     useEffect(() => {
         api.get(`/result/list_grade/`) 
@@ -44,7 +43,7 @@ function GradeList() {
     return (
         <div style={{ padding: '20px' }}>
             <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

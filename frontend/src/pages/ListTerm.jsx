@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../components/api'; 
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 function ListTerm() {
     const [terms, setTerms] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     // 1. GET - Fetch all events
     useEffect(() => {
         api.get(`/result/list_term/`) 
@@ -42,7 +42,7 @@ function ListTerm() {
     return (
         <div style={{ padding: '20px' }}>
             <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

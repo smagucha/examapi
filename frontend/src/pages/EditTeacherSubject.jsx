@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 import "../css/TakeAttendance.css";
 import api from "../components/api";
 import ReusableSelect from "../components/ReusableSelect";
 import Navbar from "../components/NaVBar";
+import { AuthContext } from "../context/AuthContext";
 function EditTeacherSubject() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -17,6 +18,7 @@ function EditTeacherSubject() {
     Class: "",
     stream: "",
   });
+  const {auth} = useContext(AuthContext);
 
   // Fetch users & designations
   useEffect(() => {
@@ -80,7 +82,7 @@ function EditTeacherSubject() {
   return (
     <div style={{ padding: "20px" }}>
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

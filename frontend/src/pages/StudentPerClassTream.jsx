@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import "../css/Home.css";
 import api from "../components/api";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 function StudentPerClassTream() {
     const { name, stream } = useParams();
     const [student, setStudent] = useState([]);
     const [streams, setStreams] = useState([]);
     const [loading, setLoading] = useState(true);
+    const {auth} = useContext(AuthContext)
     const API_URL = stream
     ? `/class/${name}/${stream}/`
     : `/class/${name}/`;
@@ -51,7 +53,7 @@ function StudentPerClassTream() {
     return (
         <div style={{ padding: '20px' }}>
              <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

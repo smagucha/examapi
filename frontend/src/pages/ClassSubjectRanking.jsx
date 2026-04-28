@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/TakeAttendance.css";
 import api from "../components/api";
 import SelectReusable from "../components/SelectReusable";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 function ClassSubjectRanking() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function ClassSubjectRanking() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const {auth} = useContext(AuthContext);
 
   useEffect(() => {
     api
@@ -70,7 +72,7 @@ function ClassSubjectRanking() {
   return (
     <div>
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

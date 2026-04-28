@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import api from "../components/api";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 export default function SelectClassSubjectEnrolled() {
   const [classes, setClasses] = useState([]);
   const [streams, setStreams] = useState([]);
@@ -17,6 +17,7 @@ export default function SelectClassSubjectEnrolled() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const {auth} = useContext(AuthContext);
 
   
 
@@ -79,7 +80,7 @@ export default function SelectClassSubjectEnrolled() {
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
        <Navbar 
-          user={{ username: "sammy" }}
+          user={auth.user}
           onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";

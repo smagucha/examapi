@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import {useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import api from "../components/api";
-import Navbar from "../components/NavBar"
+import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 
 function AddSubject(){
 	const [newSubject, setNewSubject] = useState({ name: '', code: '' });
 	const navigate = useNavigate();
-
+	const {auth} = useContext(AuthContext);
 	const handleSubmit = (e) =>{
 		e.preventDefault();
 		api.post("http://127.0.0.1:8000/result/add_subject/", newSubject)
@@ -18,6 +19,13 @@ function AddSubject(){
 	};
 	return (
 		<div style={{ padding: '20px' }}>
+		<Navbar 
+	        user={auth.user}
+	        onLogout={() => {
+	        localStorage.clear();
+	        window.location.href = "/login";
+        	}} 
+      	/>
             <h2>Add subject</h2>
             <form onSubmit={handleSubmit}>
             	<input 

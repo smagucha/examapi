@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import api from "../components/api";
 import ReusableSelect from "../components/ReusableSelect";
 import Navbar from "../components/NavBar";
+import { AuthContext } from "../context/AuthContext";
 function EditTeacher() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
   const [error, setError] = useState("");
   const [userName, setUserName] = useState("");
-
+  const {auth} = useContext(AuthContext)
   const [formData, setFormData] = useState({
     user: "",
     date_of_appointment: "",
@@ -102,7 +103,7 @@ function EditTeacher() {
   return (
     <div style={{ padding: "20px" }}>
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

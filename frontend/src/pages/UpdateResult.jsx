@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 
 function UpdateResult() {
     const { pk } = useParams(); // Gets the ID from the URL path
     const navigate = useNavigate();
-    
+    const {auth} = useContext(AuthContext);
     // Initialize state with empty strings to prevent "uncontrolled input" errors
     const [formData, setFormData] = useState({
         student: '',
@@ -47,7 +47,7 @@ function UpdateResult() {
     return (
         <div style={{ padding: '20px', maxWidth: '500px' }}>
              <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

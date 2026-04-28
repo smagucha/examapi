@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
-// 1. Capitalize function name so React recognizes it as a component
+import {AuthContext} from "../context/AuthContext"
 function ClassStreamResult() {
     const { name, stream, term } = useParams(); 
     const [ResultData,setResultData] = useState([]);
     const [subject, setSubject]=useState([])
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     useEffect(() => {
         setLoading(true);
         const apiUrl = stream 
@@ -32,11 +32,10 @@ function ClassStreamResult() {
     }, [name, stream, term]);
 
     if (loading) return <p>Loading attendance records...</p>;
-    console.log(ResultData)
     return (
         <div style={{ padding: '20px' }}>
             <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

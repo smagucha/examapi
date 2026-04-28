@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useContect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
+import { AuthContext } from "../context/AuthContext";
 
 function AddTerm() {
     const [newTerm, setNewTerm] = useState({ name: ''});
     const navigate = useNavigate();
-
+    const {auth} = useContext(AuthContext);
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post(`/result/add_term/`, newTerm)
@@ -19,7 +20,7 @@ function AddTerm() {
     return (
         <div style={{ padding: '20px' }}>
         <Navbar 
-            user={{ username: "sammy" }}
+            user={auth.user}
             onLogout={() => {
             localStorage.clear();
             window.location.href = "/login";

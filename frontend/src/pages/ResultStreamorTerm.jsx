@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendance.css";
 import SelectReusable from "../components/SelectReusable";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 function ResultStreamorTerm() {
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ function ResultStreamorTerm() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const {auth} = useContext(AuthContext);
   useEffect(() => {
     api
       .get(`/result/selectstreamorclassforresult/`)
@@ -70,7 +70,7 @@ function ResultStreamorTerm() {
   return (
     <div>
       <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

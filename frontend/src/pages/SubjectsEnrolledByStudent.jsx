@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import api from "../components/api";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/NavBar";
-
+import {AuthContext} from "../context/AuthContext";
 export default function SubjectsEnrolledByStudent() {
   const { name, subject, stream } = useParams();
-
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const {auth} = useContext(AuthContext);
   // Build API URL depending on whether stream exists
   const API_URL = stream
     ? `/result/studentenrolledsubjects/${name}/${stream}/${subject}/`
@@ -62,7 +61,7 @@ export default function SubjectsEnrolledByStudent() {
       {/* Header Card */}
       <div className="bg-white shadow-lg rounded-2xl p-6 mb-6">
          <Navbar 
-            user={{ username: "sammy" }}
+            user={auth.user}
             onLogout={() => {
             localStorage.clear();
             window.location.href = "/login";

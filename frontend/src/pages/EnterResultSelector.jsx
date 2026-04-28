@@ -4,7 +4,7 @@ import "../css/TakeAttendance.css";
 import api from "../components/api";
 import SelectReusable from "../components/SelectReusable";
 import Navbar from "../components/NavBar";
-
+import { AuthContext } from "../context/AuthContext";
 function EnterResultSelector() {
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ function EnterResultSelector() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const {auth} = useContext(AuthContext);
   useEffect(() => {
     api
       .get("/result/enter_result_for_stream_or_class/")
@@ -71,7 +71,7 @@ function EnterResultSelector() {
   return (
     <div className="take-attendance-container">
       <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

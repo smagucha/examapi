@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import api from "../components/api";
 import Navbar from "../components/NavBar";
+import { AuthContext } from "../context/AuthContext";
 
 export default function EnrollStudentsToSubject() {
   const { name, stream } = useParams();
@@ -9,9 +10,7 @@ export default function EnrollStudentsToSubject() {
   const [subjects, setSubjects] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState({});
   const [message, setMessage] = useState("");
-
-  const BASE_URL = "http://127.0.0.1:8000";
-
+  const {auth} = useContext(AuthContext);
   const endpoint = stream
     ? `/result/enrollstudentstosubject/${name}/${stream}/`
     : `/result/enrollstudentstosubjectclass/${name}/`;
@@ -71,7 +70,7 @@ export default function EnrollStudentsToSubject() {
   return (
     <div className="min-h-screen bg-slate-100 p-6">
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

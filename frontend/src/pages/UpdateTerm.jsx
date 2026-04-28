@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/Navbar";
+import {AuthContext} from "../context/AuthContext";
 
 function UpdateTerm() {
     const { pk } = useParams(); // Gets the ID from the URL path
@@ -12,7 +13,7 @@ function UpdateTerm() {
         name: '',
     });
     const [loading, setLoading] = useState(true);
-
+    const {auth} = useContext(AuthContext);
     // 1. GET: Fetch existing data when the component loads
     useEffect(() => {
         api.get(`/result/detail_term/${pk}/`)
@@ -45,7 +46,7 @@ function UpdateTerm() {
     return (
         <div style={{ padding: '20px', maxWidth: '500px' }}>
             <Navbar 
-                user={{ username: "sammy" }}
+                user={auth.user}
                 onLogout={() => {
                 localStorage.clear();
                 window.location.href = "/login";

@@ -1,5 +1,6 @@
 import "../css/Home.css";
 import { Link } from "react-router-dom";
+import {useContext} from "react";
 import {
   FaUserGraduate,
   FaUsers,
@@ -7,6 +8,7 @@ import {
 
 } from "react-icons/fa";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 export default function TeacherSections() {
   const cards = [
@@ -14,11 +16,12 @@ export default function TeacherSections() {
     { title: "teacher subjects", icon: <FaChalkboardTeacher />, path: "/teachersubject/" },
     { title: "teacher designation", icon: <FaUserGraduate />, path: "/designations/" },
   ];
+  const {auth} = useContext(AuthContext)
   return (
     
     <div className="home-container">
        <Navbar 
-          user={{ username: "sammy" }}
+          user={auth.user}
           onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";

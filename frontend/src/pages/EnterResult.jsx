@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {  useParams } from "react-router-dom";
 import api from "../components/api";
 import "../css/MarksEntryTable.css";
 import Navbar from "../components/NavBar";
+import { AuthContext } from "../context/AuthContext";
 
 const EnterResult = () => {
   const { name, term, subject, stream} = useParams();
@@ -13,6 +14,7 @@ const EnterResult = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const {auth} = useContext(AuthContext)
 
   useEffect(() => {
     // if (name && stream  && subject &&  term) {
@@ -100,7 +102,7 @@ const EnterResult = () => {
   return (
     <div className="marks-entry-container">
        <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
         localStorage.clear();
         window.location.href = "/login";

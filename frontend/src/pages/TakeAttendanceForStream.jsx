@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import api from "../components/api";
 import "../css/TakeAttendanceForStream.css";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 function TakeAttendanceForStream() {
   const { name, stream } = useParams();
 
@@ -12,7 +13,7 @@ function TakeAttendanceForStream() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
+  const {auth} = useContext(AuthContext);
   useEffect(() => {
     let url = "";
 
@@ -100,7 +101,7 @@ function TakeAttendanceForStream() {
   return (
     <div>
        <Navbar 
-          user={{ username: "sammy" }}
+          user={auth.user}
           onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";

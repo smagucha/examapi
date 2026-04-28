@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../components/api";
 import { useParams, useNavigate } from 'react-router-dom'; 
 import "../css/TakeAttendance.css";
 import Navbar from "../components/NavBar";
+import {AuthContext} from "../context/AuthContext";
 
 function UpdateTeacher() {
   const { pk } = useParams();
@@ -13,7 +14,7 @@ function UpdateTeacher() {
     designation: "",
     gender: "",
   });
-
+  const auth = useContext(AuthContext);
   // Fetch users & designations
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +62,7 @@ function UpdateTeacher() {
   return (
     <div style={{ padding: "20px" }}>
        <Navbar 
-              user={{ username: "sammy" }}
+              user={auth.user}
               onLogout={() => {
               localStorage.clear();
               window.location.href = "/login";

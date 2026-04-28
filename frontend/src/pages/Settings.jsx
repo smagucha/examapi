@@ -17,6 +17,8 @@ import {
   FaCog,
 } from "react-icons/fa";
 import Navbar from "../components/NavBar";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext";
 
 export default function Settings() {
   const cards = [
@@ -29,11 +31,12 @@ export default function Settings() {
     { title: "classes", icon: <FaEdit />, path: "/listclass" },
     { title: "users", icon:<FaUsers/>, path:"/users"},
   ];
+  const {auth} = useContext(AuthContext);
   return (
     
     <div className="home-container">
        <Navbar 
-          user={{ username: "sammy" }}
+          user={auth.user}
           onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";
