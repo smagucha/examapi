@@ -37,4 +37,6 @@ urlpatterns = [
     ),
     path("change-password/", views.change_password_view, name="change_password"),
     path("logout/", views.logout_view, name="logout"),
+    path("update-user/", views.update_user_profile, name="update-user"),
+    path("me/", views.current_user),
 ]

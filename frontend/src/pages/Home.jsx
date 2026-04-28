@@ -1,5 +1,6 @@
 import "../css/Home.css";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 import {
   FaUserGraduate,
   FaUsers,
@@ -15,6 +16,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 import Navbar from "../components/Navbar";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Home() {
   const cards = [
@@ -30,10 +32,11 @@ export default function Home() {
     { title: "Results Per Class", icon: <FaFileAlt />, path: "/results-per-class" },
     { title: "Setting", icon: <FaCog />, path: "/settings" },
   ];
+  const { auth } = useContext(AuthContext);
   return (
     <div className="home-container">
       <Navbar 
-        user={{ username: "sammy" }}
+        user={auth.user}
         onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";

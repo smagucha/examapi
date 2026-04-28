@@ -24,6 +24,7 @@ from .serializers import (
     UserSerializer,
     LoginSerializer,
     ChangePasswordSerializer,
+    UserUpdateSerializer,
 )
 from .tokens import email_verification_token
 
@@ -465,3 +466,29 @@ def logout_view(request):
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+    user = request.user
+
+    # GET: Return current user data to populate the React form
+    if request.method == "GET":
+        serializer = UserUpdateSerializer(user)
+        return Response(serializer.data)
+
+    # PATCH: Update specific fields
+    elif request.method == "PATCH":
+        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    serializer = UserUpdateSerializer(request.user)
+    return Response(serializer.data)

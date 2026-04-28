@@ -54,6 +54,8 @@ import AddClass from "./pages/AddClasses"
 import PrivateRoute from "./components/PrivateRoute";
 import Login from  "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
+import ChangePassword from "./components/ChangePassword";
+import UpdateProfile from "./components/UpdateProfile";
 function App() {
   return (
     <AuthProvider>
@@ -62,6 +64,8 @@ function App() {
         
         <Route path="/login" element={<Login/>} />
         <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+        <Route path="/change-password" element={<PrivateRoute><ChangePassword/></PrivateRoute>}/>
+        <Route path="/update-profile" element={<PrivateRoute><UpdateProfile/></PrivateRoute>}/>
         <Route path="/addclass" element={<PrivateRoute><AddClass/></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute><AllUser/></PrivateRoute>}/>
         <Route path="/addteachersubject/" element={<PrivateRoute><AddTeacherSubject/></PrivateRoute>}/>

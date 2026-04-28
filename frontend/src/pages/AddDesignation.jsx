@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, UseContext } from 'react';
+import api from "../components/api"
 import { useNavigate } from 'react-router-dom';
 import styles from '../css/AddDesignation.module.css';
 import Navbar from "../components/Navbar";
+import { AuthContext } from "../context/AuthContext";
 
 function AddDesignation() {
     const [newDesignation, setNewDesignation] = useState({ title: '' });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
+    const { auth } = useContext(AuthContext);
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -22,8 +23,8 @@ function AddDesignation() {
         setError('');
         
         try {
-            await axios.post(
-                "http://127.0.0.1:8000/teacher/add_designation/", 
+            await api.post(
+                "/teacher/add_designation/", 
                 newDesignation
             );
             alert("Designation created successfully!");
@@ -43,7 +44,7 @@ function AddDesignation() {
     return (
         <div className={styles.container}>
         <Navbar 
-            user={{ username: "sammy" }}
+            user={auth.user}
             onLogout={() => {
             localStorage.clear();
             window.location.href = "/login";

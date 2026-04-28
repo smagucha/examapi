@@ -80,7 +80,6 @@ function Navbar({ user, onLogout }) {
             <div style={styles.itemDisabled}>
               👤 {user?.username}
             </div>
-
             <div
               style={styles.item}
               onClick={() => navigate("/change-password")}
