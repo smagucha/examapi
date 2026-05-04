@@ -112,10 +112,10 @@ def register_view(request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token.make_token(user)
 
-    verification_link = request.build_absolute_uri(
-        f"/useraccount/account-confirm-email/{uid}/{token}/"
-    )
-
+    # verification_link = request.build_absolute_uri(
+    #     f"/useraccount/account-confirm-email/{uid}/{token}/"
+    # )
+    verification_link = f"localhost:5173/verify-email/{uid}/{token}/"
     # email send to user
     try:
         send_mail(
@@ -180,47 +180,6 @@ def login_view(request):
             "user": UserSerializer(user).data,
         },
         status=status.HTTP_200_OK,
-    )
-
-
-# =========================
-# VERIFY EMAIL (API)
-# =========================
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def verify_email_view(request):
-    serializer = VerifyEmailSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    uidb64 = serializer.validated_data["uidb64"]
-    token = serializer.validated_data["token"]
-    # check if user exists in db
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        return Response(
-            {"error": "Invalid user"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    if user.is_active:
-        return Response(
-            {"message": "Account already verified"},
-            status=status.HTTP_200_OK,
-        )
-    # activate user
-    if email_verification_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return Response(
-            {"message": "Successfully activated"},
-            status=status.HTTP_200_OK,
-        )
-
-    return Response(
-        {"error": "Invalid or expired token"},
-        status=status.HTTP_400_BAD_REQUEST,
     )
 
 
@@ -318,10 +277,11 @@ def password_reset_view(request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
 
-    reset_link = request.build_absolute_uri(
-        f"/useraccount/password/reset/confirm/{uid}/{token}/"
-    )
-
+    # reset_link = request.build_absolute_uri(
+    #     f"/useraccount/password/reset/confirm/{uid}/{token}/"
+    # )
+    reset_link = f"http://localhost:5173/reset-password/{uid}/{token}"
+    # http://localhost:3000/reset-password/<uid>/<token>
     send_mail(
         subject="Password Reset",
         message=f"Click the link to reset your password:\n{reset_link}",
@@ -359,6 +319,7 @@ def password_reset_confirm_view(request):
     serializer.is_valid(raise_exception=True)
     # validating user
     user = serializer.validated_data["user"]
+    print(serializer.data)
     new_password = serializer.validated_data["new_password"]
     # setting the new password
     user.set_password(new_password)

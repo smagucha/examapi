@@ -8,7 +8,6 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("verify-token/", TokenVerifyView.as_view(), name="token_verify"),
-    path("register/verify-email/", views.verify_email_view, name="rest_verify_email"),
     path(
         "register/resend-email/",
         views.resend_email_verification_view,
@@ -18,11 +17,6 @@ urlpatterns = [
         "account-confirm-email/<str:uidb64>/<str:token>/",
         views.email_confirm_redirect,
         name="account_confirm_email",
-    ),
-    path(
-        "account-confirm-email/",
-        views.verify_email_view,
-        name="account_email_verification_sent",
     ),
     path("password/reset/", views.password_reset_view, name="rest_password_reset"),
     path(

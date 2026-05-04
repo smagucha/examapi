@@ -56,13 +56,20 @@ import Login from  "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ChangePassword from "./components/ChangePassword";
 import UpdateProfile from "./components/UpdateProfile";
+import Register from "./components/Register";
+import PasswordReset from "./components/ForgotPassword";
+import ResetPasswordConfirm from "./components/ResetPasswordConfirm";
+import VerifyEmail from "./components/VerifyEmail";
 function App() {
   return (
     <AuthProvider>
     <BrowserRouter>
       <Routes>
-        
         <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register/>}/>
+        <Route path="/forgot-password" element={<PasswordReset/>}/>
+        <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordConfirm />}/>
+        <Route path="/verify-email/:uidb64/:token" element={<VerifyEmail />} />
         <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
         <Route path="/change-password" element={<PrivateRoute><ChangePassword/></PrivateRoute>}/>
         <Route path="/update-profile" element={<PrivateRoute><UpdateProfile/></PrivateRoute>}/>
@@ -81,8 +88,8 @@ function App() {
         <Route path="/subject-ranking" element={<PrivateRoute><ClassSubjectRanking/></PrivateRoute>}/>
         <Route path="/addesignation" element={<PrivateRoute><AddDesignation/></PrivateRoute>}/>
         <Route path="/designations/" element={<PrivateRoute><ListDesignation/></PrivateRoute>}/>
-        <Route path="/update-results" element={<SelectClasstreamResultUpdate/>}/>
-        <Route path="/updateresult/:pk" element ={<UpdateResult/>} />
+        <Route path="/update-results" element={<PrivateRoute><SelectClasstreamResultUpdate/></PrivateRoute>}/>
+        <Route path="/updateresult/:pk" element ={<PrivateRoute><UpdateResult/></PrivateRoute>} />
         <Route path="/addterm" element={<PrivateRoute><AddTerm/></PrivateRoute>} />
         <Route path="/liststream" element ={<PrivateRoute><ListStream/></PrivateRoute>} />
         <Route path="/listclass" element={<PrivateRoute><ListClass /></PrivateRoute>} />
@@ -91,7 +98,7 @@ function App() {
         <Route path="/Class/:name/:stream" element={<StudentPerClassTream/>} />
         <Route path="/parents" element={<PrivateRoute><Parent/></PrivateRoute>} />
         <Route path="/subjectperrankstreamterm/:name/:stream/:term/:subject/" element={<PrivateRoute><SubjectPerRank/></PrivateRoute>}/>
-        <Route path="/subjectperrankclass/:name/:term/:subject/" element={<SubjectPerRank/>}/>
+        <Route path="/subjectperrankclass/:name/:term/:subject/" element={<PrivateRoute><SubjectPerRank/></PrivateRoute>}/>
         <Route path="teacher/designation_detail/:pk"element={<PrivateRoute><UpdateDesignation/></PrivateRoute>}/>
         <Route path="/teachers" element={<h1>Teachers Page</h1>} />
         <Route path="/SelectClassorStreamToEnrollSubject" element={<PrivateRoute><SelectClassorStreamToEnrollSubject/></PrivateRoute>}/>
@@ -122,16 +129,12 @@ function App() {
         <Route path="/subject/edit/:pk" element={<PrivateRoute><UpdateSubject /></PrivateRoute>} />
         <Route path="/events/edit/:pk" element={<PrivateRoute><EventUpdateForm /></PrivateRoute>} />
         <Route path="/take-attendance" element={<PrivateRoute><TakeAttendance/></PrivateRoute>} />
-        <Route path="/take_attendance/:name" element={<PrivateRoute><TakeAttendanceForStream /></PrivateRoute>} />
-        <Route path="/take_attendance_for_stream/:name/:stream" element={<TakeAttendanceForStream />} />
+        <Route path="/take_attendance/:name" element={<PrivateRoute><TakeAttendanceForStream /></PrivateRoute>}/>
+        <Route path="/take_attendance_for_stream/:name/:stream" element={<PrivateRoute><TakeAttendanceForStream/></PrivateRoute>}/>
         <Route path="/view-attendance" element={<PrivateRoute><ViewAttendance /></PrivateRoute>} />
         <Route path="/viewattendanceperclass/:name" element={<PrivateRoute><ViewAttendancePerClassStream /></PrivateRoute>}/>
-        <Route path="/viewattendanceperclass/:name/:stream" element={<ViewAttendancePerClassStream/>}/>
+        <Route path="/viewattendanceperclass/:name/:stream" element={<PrivateRoute><ViewAttendancePerClassStream/></PrivateRoute>}/>
         <Route path="/enter-result" element={<PrivateRoute><EnterResultSelector/></PrivateRoute>} />
-        <Route path="/update-results" element={<h1>Update Results</h1>} />
-        <Route path="/subject-ranking" element={<h1>Subject Ranking</h1>} />
-        <Route path="/results-per-class" element={<h1>Results Per Class</h1>} />
-        <Route path="/class-ranking" element={<h1>Class Ranking</h1>} />
         <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>

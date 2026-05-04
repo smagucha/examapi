@@ -1,0 +1,55 @@
+import React, { useState } from "react";
+import axios from "axios";
+
+function PasswordReset() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/useraccount/password/reset/", // your DRF endpoint
+        { email }
+      );
+
+      setMessage(res.data.message);
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.error || "Something went wrong");
+      } else {
+        setError("Network error");
+      }
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: "400px", margin: "auto" }}>
+      <h2>Reset Password</h2>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        />
+
+        <button type="submit" style={{ width: "100%", padding: "10px" }}>
+          Send Reset Link
+        </button>
+      </form>
+
+      {message && <p style={{ color: "green" }}>{message}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </div>
+  );
+}
+
+export default PasswordReset;

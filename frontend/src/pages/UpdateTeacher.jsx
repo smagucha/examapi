@@ -14,7 +14,7 @@ function UpdateTeacher() {
     designation: "",
     gender: "",
   });
-  const auth = useContext(AuthContext);
+  const {auth} = useContext(AuthContext);
   // Fetch users & designations
   useEffect(() => {
     const fetchData = async () => {
