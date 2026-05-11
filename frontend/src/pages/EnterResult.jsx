@@ -37,7 +37,6 @@ const EnterResult = () => {
       setError(null);
       const response = await api.get(getApiUrl());
       setStudents(response.data);
-      console.log(response.data)
       const initialMarks = {};
       response.data.forEach((students) => {
         initialMarks[students.student_id] = "";

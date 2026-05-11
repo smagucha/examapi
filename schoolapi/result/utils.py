@@ -31,50 +31,6 @@ def all_subjects():
     return subject.objects.all()
 
 
-# def generate_excel(name, term, subjectname, sorttotalfinal, stream=None):
-#     name = f"{name} {term} result"
-#     response = HttpResponse(content_type="application/ms-excel")
-#     response["Content-Disposition"] = "attachment; filename=results.xls "
-
-#     wb = xlwt.Workbook(encoding="utf-8")
-#     ws = wb.add_sheet("Users")
-
-#     # Sheet header, first row
-#     row_num = 0
-
-#     font_style = xlwt.XFStyle()
-#     font_style.font.bold = True
-#     columns = ["Rank", "Student"]
-#     for xubject in subjectname:
-#         columns.append(xubject.name)
-#     columns.append("Total")
-#     columns.append("Grade")
-#     columns.append("Points")
-#     for col_num in range(len(columns)):
-#         ws.write(row_num, col_num, columns[col_num], font_style)
-#     # Sheet body, remaining rows
-#     font_style = xlwt.XFStyle()
-#     rows = sorttotalfinal
-#     for row in rows:
-#         row_num += 1
-#         for col_num in range(len(row)):
-#             ws.write(row_num, col_num, row[col_num], font_style)
-#     wb.save(response)
-#     return response
-
-
-# def generate_pdf(template_name, context):
-#     template_path = template_name
-#     response = HttpResponse(content_type="application/pdf")
-#     response["Content-Disposition"] = 'filename="report.pdf"'
-#     template = get_template(template_path)
-#     html = template.render(context)
-#     pisa_status = pisa.CreatePDF(html, dest=response)
-#     if pisa_status.err:
-#         return HttpResponse("We had some errors <pre>" + html + "</pre>")
-#     return response
-
-
 def class_stream_count(name, stream=None):
     if stream:
         return Student.student.class_or_stream_count(name, stream)
@@ -425,3 +381,27 @@ def send_sms(to, body):
     )
 
     return message
+
+
+def build_school_data(
+    include_classes=False,
+    include_streams=False,
+    include_subjects=False,
+    include_terms=False,
+):
+    data = {}
+
+    if include_classes:
+        data["classes"] = [str(c) for c in get_class()]
+
+    if include_streams:
+        streams = get_stream()
+        data["streams"] = [str(s) for s in streams] if streams else []
+
+    if include_subjects:
+        data["subjects"] = [str(sub) for sub in all_subjects()]
+
+    if include_terms:
+        data["terms"] = [str(t) for t in all_terms()]
+
+    return data

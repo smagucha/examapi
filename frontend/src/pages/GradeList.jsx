@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
 import { AuthContext } from "../context/AuthContext";
+import useRoles from "../components/useRoles";
 
 function GradeList() {
     const [grades, setGrades] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+        isTeacher,
+    } = useRoles();
     // 1. GET - Fetch all events
     useEffect(() => {
         api.get(`/result/list_grade/`) 
@@ -49,14 +54,14 @@ function GradeList() {
                 window.location.href = "/login";
                 }} 
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           { isAdmin && (<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>grades</h2>
                 <Link to="/addgrade">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add grade
                     </button>
                 </Link>
-            </div>
+            </div> )}
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
                 <thead>
@@ -65,8 +70,8 @@ function GradeList() {
                         <th>PERCENT</th>
                         <th>NAME</th>
                         <th>POINTS</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin && <th>edit</th>}
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -77,11 +82,11 @@ function GradeList() {
                                 <td>{grade.percent}</td>
                                 <td>{grade.name}</td>
                                 <td>{grade.points}</td>
-                                <td> <Link to={`/updategrade/${grade.id}`}>
+                                {isAdmin && (<td> <Link to={`/updategrade/${grade.id}`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
+                                </td>)}
+                                {isAdmin &&( <td>
                                    
                                     <button 
                                         onClick={() => handleDelete(grade.id)} 
@@ -89,7 +94,7 @@ function GradeList() {
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
                             </tr>
                         ))
                     ) : (

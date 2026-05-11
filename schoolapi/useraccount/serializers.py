@@ -71,9 +71,18 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+
     class Meta:
         model = User
-        fields = ["id", "username", "email"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "groups",
+        ]
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -84,4 +93,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "first_name", "last_name", "email"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+        ]

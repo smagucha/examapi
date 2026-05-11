@@ -3,11 +3,14 @@ import {Link} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
-
+import useRoles from "../components/useRoles";
 function ListStream(){
 	const [streams, setStreams] = useState([]);
 	const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+    } = useRoles();
 	useEffect(() => {
 		api.get(`/stream_list/`)
 		.then(res => {
@@ -42,6 +45,7 @@ function ListStream(){
                 window.location.href = "/login";
                 }} 
             />
+            { isAdmin && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> streams</h2>
                 <Link to="/addstream">
@@ -49,15 +53,15 @@ function ListStream(){
                         + Add stream
                     </button>
                 </Link>
-            </div>
+            </div>)}
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f2f2f2' }}>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin &&<th>edit</th>}
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -66,11 +70,11 @@ function ListStream(){
                             <tr key={stream.id}>
                                 <td>{stream.id}</td>
                                 <td>{stream.name}</td>
-                                <td> <Link to={`/streamupdate/${stream.id}`}>
+                                {isAdmin &&(<td> <Link to={`/streamupdate/${stream.id}`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
+                                </td>)}
+                                {isAdmin &&(<td>
                                    
                                     <button 
                                         onClick={() => handleDelete(stream.id)} 
@@ -78,7 +82,7 @@ function ListStream(){
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
                             </tr>
                         ))
                     ) : (

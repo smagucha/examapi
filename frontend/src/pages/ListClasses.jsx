@@ -3,11 +3,17 @@ import {Link} from 'react-router-dom';
 import api from "../components/api"
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
+import useRoles from "../components/useRoles";
 
 function ListClass(){
     const [klass, setKlass] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    // permissions
+   const {
+        isAdmin,
+        isTeacher
+    } = useRoles();
     useEffect(() => {
         api.get(`/all_classes/`)
         .then(res => {
@@ -44,11 +50,13 @@ function ListClass(){
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> classes</h2>
+                {isAdmin && (
                 <Link to="/addclass">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add class
                     </button>
                 </Link>
+                )}
             </div>
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -56,8 +64,8 @@ function ListClass(){
                     <tr style={{ backgroundColor: '#f2f2f2' }}>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin && <th>edit</th>}
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -66,11 +74,12 @@ function ListClass(){
                             <tr key={klass.id}>
                                 <td>{klass.id}</td>
                                 <td>{klass.name}</td>
-                                <td> <Link to={`/updateclass/${klass.id}`}>
+                            
+                               {isAdmin && ( <td> <Link to={`/updateclass/${klass.id}`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
+                                </td>)}
+                                {isAdmin && (<td>
                                    
                                     <button 
                                         onClick={() => handleDelete(klass.id)} 
@@ -78,7 +87,8 @@ function ListClass(){
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
+                                
                             </tr>
                         ))
                     ) : (

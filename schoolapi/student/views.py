@@ -14,9 +14,12 @@ from datetime import date, datetime
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
+from .utils.permissions import allowed_groups
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_class(request):
     if request.method == "POST":
         serializer = KlassSerializer(data=request.data)
@@ -26,6 +29,8 @@ def add_class(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def all_class(request):
     if request.method == "GET":
         klass = Klass.objects.all()
@@ -34,6 +39,8 @@ def all_class(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def class_detail(request, pk):
     try:
         klass = Klass.objects.get(pk=pk)
@@ -57,6 +64,8 @@ def class_detail(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_stream(request):
     if request.method == "POST":
         serializer = StreamSerializer(data=request.data)
@@ -66,6 +75,8 @@ def add_stream(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def stream_list(request):
     stream = Stream.objects.all()
     serializer = StreamSerializer(stream, many=True)
@@ -73,6 +84,8 @@ def stream_list(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def stream_detail(request, pk):
     try:
         stream = Stream.objects.get(pk=pk)
@@ -96,6 +109,8 @@ def stream_detail(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_student(request):
     if request.method == "POST":
         serializer_class = StudentSerializer(data=request.data)
@@ -105,6 +120,8 @@ def add_student(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def student_list(request):
     if request.method == "GET":
         students = Student.student.get_student_list()
@@ -113,6 +130,8 @@ def student_list(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def student_detail(request, pk):
     """
     Retrieve, update or delete a code snippet.
@@ -138,11 +157,13 @@ def student_detail(request, pk):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def student_class(request, name, stream=None):
     students = Student.student.get_student_list_class_or_stream(
         name=name, stream=stream
     )
     serializer = StudentSerializer(students, many=True)
+    print(student)
     context = {
         "title": "class students",
         "student": serializer.data,
@@ -157,6 +178,8 @@ def student_class(request, name, stream=None):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def take_attendance(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -178,6 +201,8 @@ def take_attendance(request):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def record_attendance(request, name, stream=None):
     students = Student.student.get_student_list_class_or_stream(name, stream)
     if request.method == "POST":
@@ -219,6 +244,8 @@ def record_attendance(request, name, stream=None):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def attendance_detail(request, pk):
     """
     Retrieve, update or delete a code snippet.
@@ -245,6 +272,8 @@ def attendance_detail(request, pk):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def viewattendance(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -275,6 +304,8 @@ def viewattendance(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def viewattendanceperstream(request, name, stream=None):
     current_month = datetime.now().month
     attend = Attendance.attend.get_student_list_stream(name=name, stream=stream)
@@ -296,6 +327,7 @@ def viewattendanceperstream(request, name, stream=None):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def get_all_parents(request):
     parents_with_students = Student.student.get_student_list()
     context = [
@@ -312,6 +344,7 @@ def get_all_parents(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def student_class(
     request,
     name,

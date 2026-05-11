@@ -79,12 +79,12 @@ urlpatterns = [
     #     views.getresultstreamterm,
     #     name="resultstreamterm",
     # ),
-    path("selectstreamforsubjectranking/", views.select_stream_for_subject_ranking),
-    path(
-        "subjectrankingstream/<str:class_name>/<str:term>/<str:subject>/",
-        views.class_stream_subject_ranking,
-        name="subjectrankingstream",
-    ),
+    # path("selectstreamforsubjectranking/", views.select_stream_for_subject_ranking),
+    # path(
+    #     "subjectrankingstream/<str:class_name>/<str:term>/<str:subject>/",
+    #     views.class_stream_subject_ranking,
+    #     name="subjectrankingstream",
+    # ),
     path("allsubjects", views.get_subjects),
     path(
         "subject_results_classtream/<str:class_name>/<str:term>/<str:subject>/<str:stream>/",

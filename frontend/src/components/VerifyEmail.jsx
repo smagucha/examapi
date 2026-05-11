@@ -22,7 +22,7 @@ function VerifyEmail() {
 
     verify();
   }, [uidb64, token]);
-  console.log(message)
+  console.log(message);
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Email Verification</h2>

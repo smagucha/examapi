@@ -17,11 +17,3 @@ function SelectReusable({ label, name, options, value, onChange }) {
     );
 }
 export default SelectReusable;
-
-{/*<ReusableSelect 
-    label="Class"
-    name="class"
-    options={data.classes}
-    value={formData.class}
-    onChange={handleChange}
-/>*/}

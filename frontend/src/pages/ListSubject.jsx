@@ -1,12 +1,18 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from "../components/api";
-import Navbar from "../components/api";
+import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
+import useRoles from "../components/useRoles";
 function SubjectsList() {
     const [subjects, setSubjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+        isTeacher,
+        isParent,
+    } = useRoles();
     // 1. GET - Fetch all events
     useEffect(() => {
         api.get(`/result/allsubjects`) 
@@ -50,11 +56,13 @@ function SubjectsList() {
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>subjects</h2>
+                {isAdmin  && ( 
                 <Link to="/addsubject">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add subject
                     </button>
                 </Link>
+                )}
             </div>
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -63,8 +71,8 @@ function SubjectsList() {
                         <th>ID</th>
                         <th>NAME</th>
                         <th>CODE</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin &&<th>edit</th>}
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -74,11 +82,11 @@ function SubjectsList() {
                                 <td>{subject.id}</td>
                                 <td>{subject.name}</td>
                                 <td>{subject.code}</td>
-                                <td> <Link to={`/subject/edit/${subject.id}/`}>
+                                {isAdmin &&(<td> <Link to={`/subject/edit/${subject.id}/`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
+                                </td>)}
+                                {isAdmin &&(<td>
                                    
                                     <button 
                                         onClick={() => handleDelete(subject.id)} 
@@ -86,7 +94,7 @@ function SubjectsList() {
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
                             </tr>
                         ))
                     ) : (

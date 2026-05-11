@@ -7,6 +7,8 @@ from django.shortcuts import redirect
 from django.db import transaction
 import logging
 from django.contrib.auth.models import User
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 from student.models import Stream, Klass
 from .models import term, subject, Mark, Grading, EnrollStudenttosubect
 from .serializers import (
@@ -23,6 +25,7 @@ from .utils import (
     # generate_excel,
     # generate_pdf,
     class_stream_count,
+    build_school_data,
     student_stream_class,
     student_subject_count,
     get_average_subject_marks,
@@ -35,6 +38,7 @@ from .utils import (
     update_term_results,
     getgrade,
     get_grade,
+    build_school_data,
     get_class,
     calculate_average,
     get_student_avg_and_class_average,
@@ -48,9 +52,12 @@ from .utils import (
     send_sms,
     get_stream,
 )
+from student.utils.permissions import allowed_groups
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_subject(request):
     if request.method == "POST":
         serializer = Subjectserializer(data=request.data)
@@ -60,6 +67,8 @@ def add_subject(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def list_subjects(request):
     if request.method == "GET":
         subjects = subject.objects.all()
@@ -68,6 +77,8 @@ def list_subjects(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def detail_subject(request, pk):
     try:
         subjects = subject.objects.get(pk=pk)
@@ -78,7 +89,6 @@ def detail_subject(request, pk):
         return Response(serializer.data)
     elif request.method == "PUT":
         serializer = Subjectserializer(subjects, data=request.data)
-        print(serializer.is_valid())
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -89,6 +99,8 @@ def detail_subject(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_term(request):
     if request.method == "POST":
         serializer = Termserializer(data=request.data)
@@ -98,6 +110,8 @@ def add_term(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def list_term(request):
     terms = term.objects.all()
     serializer = Termserializer(terms, many=True)
@@ -105,6 +119,8 @@ def list_term(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def detail_term(request, pk):
     try:
         term_obj = term.objects.get(pk=pk)
@@ -125,6 +141,8 @@ def detail_term(request, pk):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def add_grade(request):
     if request.method == "POST":
         serializer = GradeSerializer(data=request.data)
@@ -134,6 +152,8 @@ def add_grade(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def list_grade(request):
     if request.method == "GET":
         grades = Grading.objects.all()
@@ -142,6 +162,8 @@ def list_grade(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def detail_grade(request, pk):
     try:
         grade_obj = Grading.objects.get(pk=pk)
@@ -162,6 +184,8 @@ def detail_grade(request, pk):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def enroll_student_to_subject_all(request):
     allenroll = EnrollStudenttosubect.enroll.get_all_students_subject()
     serializer = EnrollStudenttosubectserializer(allenroll, many=True)
@@ -169,6 +193,8 @@ def enroll_student_to_subject_all(request):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def enroll_students_to_student(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -182,11 +208,10 @@ def enroll_students_to_student(request):
         )
 
         return Response({"redirect_url": redirect_url})
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "streams": [str(s) for s in get_stream()] if get_stream() else [],
-    }
-
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+    )
     return Response(data)
 
 
@@ -194,6 +219,8 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def enroll_students_to_subject(request, name, stream=None):
     """
     Enroll students to subjects or get available students and subjects.
@@ -304,6 +331,8 @@ def enroll_students_to_subject(request, name, stream=None):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def select_class_subject_enrolled(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -328,16 +357,17 @@ def select_class_subject_enrolled(request):
             )
         # /result/studentenrolledsubjects/one/red/math/"
         return Response({"redirect_url": redirect_url})
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "streams": [str(s) for s in Stream.objects.all()],
-        "subjects": [str(sub) for sub in all_subjects()],
-    }
-
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_subjects=True,
+    )
     return Response(data)
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def subjects_enrolled_by_student(request, name, subject, stream=None):
     queryset = EnrollStudenttosubect.objects.filter(
         class_name__name=name, subject__name=subject
@@ -371,6 +401,8 @@ def subjects_enrolled_by_student(request, name, subject, stream=None):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def class_subject_ranking(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -397,16 +429,18 @@ def class_subject_ranking(request):
             },
         )
         return Response({"redirect_url": redirect_url})
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "subjects": [str(s) for s in all_subjects()],
-        "terms": [str(t) for t in all_terms()],
-        "streams": [str(s) for s in get_stream()],
-    }
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_subjects=True,
+        include_terms=True,
+    )
     return Response(data)
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher", "Parent"])
 def subjectperrank(request, name, term, subject, stream=None):
     rankings_data = Mark.mark.student_subject_ranking_per_class_or_stream(
         name, term, subject, stream
@@ -425,6 +459,8 @@ def subjectperrank(request, name, term, subject, stream=None):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher", "Parent"])
 def result_for_stream_and_class(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -449,15 +485,17 @@ def result_for_stream_and_class(request):
             )
 
         return Response({"redirect_url": redirect_url})
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "terms": [str(t) for t in all_terms()],
-        "stream": [str(s) for s in get_stream()],
-    }
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_terms=True,
+    )
     return Response(data)
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher", "Parent"])
 def getresultstreamterm(request, name, term, stream=None):
     subjects = all_subjects()
     students = get_students_by_class_and_stream(name, stream)
@@ -465,7 +503,6 @@ def getresultstreamterm(request, name, term, stream=None):
     sorted_results = sort_results_by_total_marks(results)
     indexed_results = add_index_to_results(sorted_results)
     avg_marks = calculate_average_marks_and_grading(indexed_results, term)
-
     data = {
         "page_obj": indexed_results,
         "subject_list": [str(s) for s in all_subjects()],
@@ -475,62 +512,71 @@ def getresultstreamterm(request, name, term, stream=None):
     return Response(data)
 
 
+# @api_view(["GET", "POST"])
+# def select_stream_for_subject_ranking(request):
+#     if request.method == "POST":
+#         selected_class = request.data.get("selected_class")
+#         selected_subject = request.data.get("selected_subject")
+#         selected_term = request.data.get("selected_term")
+
+#         redirect_url = reverse(
+#             "subjectrankingstream",
+#             kwargs={
+#                 "class_name": "selected_class",
+#                 "term": "selected_term",
+#                 "subject": "selected_subject",
+#             },
+#         )
+#         return Response(redirect_url)
+
+#     # data = {
+#     #     "classes": [str(c) for c in get_class()],
+#     #     "subjects": [str(s) for s in all_subjects()],
+#     #     "terms": [str(t) for t in all_terms()],
+#     # }
+#     data = build_school_data(
+#         include_classes=True,
+#         include_subjects=True,
+#         include_terms=True,
+#     )
+#     print(data)
+#     return Response(data)
+
+
+# @api_view(["GET"])
+# def class_stream_subject_ranking(request, class_name, term, subject):
+#     stream = Stream.objects.all()
+#     grades = getgrade()
+#     streamsubjectrank = {}
+#     for streams in stream:
+#         subjectclass = list(
+#             Mark.mark.get_subject_marks_for_class_or_stream(
+#                 student_class_name=class_name,
+#                 Term=term,
+#                 subject_name=subject,
+#                 stream=streams.name,
+#             )
+#         )
+#         studentpersubject = EnrollStudenttosubect.enroll.student_per_subject_count(
+#             subject=subject, class_name=class_name, stream=streams.name
+#         )
+#         if subjectclass:
+#             avg = sum(subjectclass) / studentpersubject
+#             streamsubjectrank[streams.name] = get_grade(grades, avg).points
+#     sorted_subject_ranking = dict(
+#         sorted(streamsubjectrank.items(), key=lambda item: item[1], reverse=True)
+#     )
+#     data = {
+#         "subject_ranking": sorted_subject_ranking,
+#         "subject": subject,
+#         "class": class_name,
+#     }
+#     return Response(data)
+
+
 @api_view(["GET", "POST"])
-def select_stream_for_subject_ranking(request):
-    if request.method == "POST":
-        selected_class = request.data.get("selected_class")
-        selected_subject = request.data.get("selected_subject")
-        selected_term = request.data.get("selected_term")
-
-        redirect_url = reverse(
-            "subjectrankingstream",
-            kwargs={
-                "class_name": "selected_class",
-                "term": "selected_term",
-                "subject": "selected_subject",
-            },
-        )
-        return Response(redirect_url)
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "subjects": [str(s) for s in all_subjects()],
-        "terms": [str(t) for t in all_terms()],
-    }
-    return Response(data)
-
-
-@api_view(["GET"])
-def class_stream_subject_ranking(request, class_name, term, subject):
-    stream = Stream.objects.all()
-    grades = getgrade()
-    streamsubjectrank = {}
-    for streams in stream:
-        subjectclass = list(
-            Mark.mark.get_subject_marks_for_class_or_stream(
-                student_class_name=class_name,
-                Term=term,
-                subject_name=subject,
-                stream=streams.name,
-            )
-        )
-        studentpersubject = EnrollStudenttosubect.enroll.student_per_subject_count(
-            subject=subject, class_name=class_name, stream=streams.name
-        )
-        if subjectclass:
-            avg = sum(subjectclass) / studentpersubject
-            streamsubjectrank[streams.name] = get_grade(grades, avg).points
-    sorted_subject_ranking = dict(
-        sorted(streamsubjectrank.items(), key=lambda item: item[1], reverse=True)
-    )
-    data = {
-        "subject_ranking": sorted_subject_ranking,
-        "subject": subject,
-        "class": class_name,
-    }
-    return Response(data)
-
-
-@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def enter_result_for_stream_or_class(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -558,16 +604,18 @@ def enter_result_for_stream_or_class(request):
             )
             # {"selected_class":"one","selected_stream":"red","selected_term":"first term","selected_subject":"math"}
         return Response({"redirect_url": redirect_url})
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "terms": [str(t) for t in all_terms()],
-        "subjects": [str(s) for s in all_subjects()],
-        "streams": [str(s) for s in get_stream()],
-    }
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_terms=True,
+        include_subjects=True,
+    )
     return Response(data)
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def enter_result(request, name, Term, Subject, stream=None):
     exam = EnrollStudenttosubect.enroll.get_students_subject(
         name=name, stream=stream, Subject=Subject
@@ -608,6 +656,8 @@ def enter_result(request, name, Term, Subject, stream=None):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher", "Parent"])
 def get_subjects(request):
     if request.method == "GET":
         Subject = subject.objects.all()
@@ -616,6 +666,8 @@ def get_subjects(request):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def select_result_to_update(request):
     if request.method == "POST":
         selected_term = request.data.get("selected_term")
@@ -643,17 +695,18 @@ def select_result_to_update(request):
                 },
             )
         return Response(redirect_url)
-
-    data = {
-        "classes": [str(c) for c in get_class()],
-        "terms": [str(t) for t in all_terms()],
-        "subjects": [str(s) for s in all_subjects()],
-        "streams": [str(s) for s in get_stream()],
-    }
+    data = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_terms=True,
+        include_subjects=True,
+    )
     return Response(data)
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher", "Parent"])
 def subject_results_class(request, class_name, term, subject, stream=None):
     subject_results = Mark.mark.get_subject_marks_for_class_or_stream_marks(
         student_class_name=class_name,
@@ -672,11 +725,12 @@ def subject_results_class(request, class_name, term, subject, stream=None):
         }
         for student in subject_results
     ]
-    print(class_name, term, subject, stream)
     return Response(context)
 
 
 @api_view(["GET", "PUT"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher"])
 def update_result(request, pk):
     try:
         Mark_obj = Mark.objects.get(pk=pk)
@@ -697,6 +751,8 @@ def update_result(request, pk):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Teacher", "Parent"])
 def result_stream_or_term(request):
     if request.method == "POST":
         selected_class = request.data.get("selected_class")
@@ -718,15 +774,22 @@ def result_stream_or_term(request):
         )
         return Response({"redirect_url": redirect_url})
 
-    context = {
-        "classes": [str(c) for c in get_class()],
-        "terms": [str(t) for t in all_terms()],
-        "streams": [str(s) for s in get_stream()],
-    }
+    # context = {
+    #     "classes": [str(c) for c in get_class()],
+    #     "terms": [str(t) for t in all_terms()],
+    #     "streams": [str(s) for s in get_stream()],
+    # }
+    context = build_school_data(
+        include_classes=True,
+        include_streams=True,
+        include_terms=True,
+    )
     return Response(context)
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Parent", "Teacher"])
 def getresultstreamterm(request, name, term, stream=None):
     subjects = all_subjects()
     students = get_students_by_class_and_stream(name, stream)
@@ -734,8 +797,6 @@ def getresultstreamterm(request, name, term, stream=None):
     sorted_results = sort_results_by_total_marks(results)
     indexed_results = add_index_to_results(sorted_results)
     avg_marks = calculate_average_marks_and_grading(indexed_results, term)
-    print(indexed_results)
-
     context = {
         "page_obj": indexed_results,
         "subjects": [str(sub) for sub in all_subjects()],

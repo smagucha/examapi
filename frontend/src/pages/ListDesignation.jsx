@@ -3,11 +3,15 @@ import {Link} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
-
+import useRoles from "../components/useRoles";
 function ListDesignation(){
 	const [designation, setDesignation] = useState([]);
 	const [loading, setLoading] = useState(true);
     const {auth}= useContext(AuthContext);
+    const {
+        isAdmin,
+        isTeacher
+    } = useRoles();
 	useEffect(() => {
 		api.get(`/teacher/list_designation/`)
 		.then(res => {
@@ -42,6 +46,7 @@ function ListDesignation(){
                 window.location.href = "/login";
                 }} 
             />
+            {isAdmin &&(
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> designations</h2>
                 <Link to="/addesignation">
@@ -49,15 +54,14 @@ function ListDesignation(){
                         + Add Designation
                     </button>
                 </Link>
-            </div>
+            </div>)}
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f2f2f2' }}>
-                      
                         <th>Name</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin &&<th>edit</th>} 
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -65,11 +69,11 @@ function ListDesignation(){
                         designation.map((designation) => (
                             <tr key={designation.id}>
                                 <td>{designation.title}</td>
-                                <td> <Link to={`/teacher/designation_detail/${designation.id}`}>
+                                {isAdmin &&(<td> <Link to={`/teacher/designation_detail/${designation.id}`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
+                                </td>)}
+                                {isAdmin &&(<td>
                                    
                                     <button 
                                         onClick={() => handleDelete(designation.id)} 
@@ -77,12 +81,12 @@ function ListDesignation(){
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5" style={{ textAlign: 'center' }}>No subjects found.</td>
+                            <td colSpan="5" style={{ textAlign: 'center' }}>No titles found.</td>
                         </tr>
                     )}
                 </tbody>

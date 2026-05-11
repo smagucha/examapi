@@ -7,7 +7,7 @@ import {AuthContext} from "../context/AuthContext"
 function AddGrade() {
     const [newGrade, setNewGrade] = useState({ percent: '', name: '', points: '' });
     const navigate = useNavigate();
-    const {Auth} = useContext(AuthContext)
+    const {auth} = useContext(AuthContext)
     const handleSubmit = (e) => {
         e.preventDefault();
         api.post(`/result/add_grade/`, newGrade)

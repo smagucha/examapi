@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 import api from '../components/api'; 
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
+import useRoles from "../components/useRoles";
 function ListTerm() {
     const [terms, setTerms] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+    } = useRoles();
     // 1. GET - Fetch all events
     useEffect(() => {
         api.get(`/result/list_term/`) 
@@ -50,11 +54,13 @@ function ListTerm() {
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>terms</h2>
+                {isAdmin && (
                 <Link to="/addterm">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add grade
                     </button>
                 </Link>
+                )}
             </div>
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -62,8 +68,8 @@ function ListTerm() {
                     <tr style={{ backgroundColor: '#f2f2f2' }}>
                         <th>ID</th>
                         <th>NAME</th>
-                        <th>edit</th>
-                        <th>Actions</th>
+                        {isAdmin &&<th>edit</th>}
+                        {isAdmin &&<th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -72,19 +78,18 @@ function ListTerm() {
                             <tr key={term.id}>
                                 <td>{term.id}</td>
                                 <td>{term.name}</td>
-                                <td> <Link to={`/updateterm/${term.id}`}>
+                                {isAdmin && (<td> <Link to={`/updateterm/${term.id}`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
-                                <td>
-                                   
+                                </td>)}
+                                {isAdmin && (<td>
                                     <button 
                                         onClick={() => handleDelete(term.id)} 
                                         style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>)}
                             </tr>
                         ))
                     ) : (

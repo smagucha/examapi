@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {useNavigate} from 'react-router-dom';
 import "../css/TakeAttendance.css";
 import api from "../components/api";
@@ -43,7 +43,6 @@ function AddTeacherSubject() {
         console.error("Error fetching data:", err);
       }
     };
-
     fetchData();
   }, []);
   // Handle input change

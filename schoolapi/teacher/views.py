@@ -16,11 +16,13 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Teacher, Designation
 from .serializers import Teacherserializer
+from student.utils.permissions import allowed_groups
 
 
 # ✅ GET: fetch users + designations
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def teacher_form_data(request):
     teachers = User.objects.filter(groups__name="Teacher")
     titles = Designation.objects.all()
@@ -40,6 +42,8 @@ def teacher_form_data(request):
 
 # ✅ POST: add teacher
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def add_teacher(request):
     serializer = Teacherserializer(data=request.data)
 
@@ -56,6 +60,7 @@ def add_teacher(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def list_teacher(request):
     if request.method == "GET":
         teachers = Teacher.objects.all()
@@ -74,6 +79,7 @@ def list_teacher(request):
 
 @api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def teacher_detail(request, pk):
     try:
         teachers = Teacher.objects.get(pk=pk)
@@ -96,6 +102,8 @@ def teacher_detail(request, pk):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def add_designation(request):
     if request.method == "POST":
         serializer = Designationserializer(data=request.data)
@@ -106,6 +114,7 @@ def add_designation(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def list_designation(request):
     if request.method == "GET":
         designations = Designation.objects.all()
@@ -115,6 +124,7 @@ def list_designation(request):
 
 @api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def designation_detail(request, pk):
     try:
         designations = Designation.objects.get(pk=pk)
@@ -136,6 +146,7 @@ def designation_detail(request, pk):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def add_teachersubject(request):
     if request.method == "POST":
         serializer = Teachersubjectserializer(data=request.data)
@@ -148,6 +159,7 @@ def add_teachersubject(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin", "Teacher"])
 def list_teachersubject(request):
     teachersubjects = Teachersubjects.objects.all()
     data = [
@@ -166,6 +178,7 @@ def list_teachersubject(request):
 
 @api_view(["GET", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def teachersubject_detail(request, pk):
     try:
         teachersubjects = Teachersubjects.objects.get(pk=pk)
@@ -200,6 +213,7 @@ def teachersubject_detail(request, pk):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def get_unregister_teacher(request):
     teacher = User.objects.filter(groups__name="Teacher")
     teacher = [

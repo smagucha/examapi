@@ -14,7 +14,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from student.utils.permissions import allowed_groups
 from .serializers import (
     RegisterSerializer,
     ResendEmailVerificationSerializer,
@@ -30,6 +30,8 @@ from .tokens import email_verification_token
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def all_users(request):
     users = User.objects.all()
 
@@ -49,6 +51,8 @@ def all_users(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+@allowed_groups(["Admin"])
 def deactive_user(request, id):
     try:
         user = MyUser.objects.get(id=id)
@@ -451,5 +455,5 @@ def update_user_profile(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def current_user(request):
-    serializer = UserUpdateSerializer(request.user)
+    serializer = UserSerializer(request.user)
     return Response(serializer.data)

@@ -16,8 +16,7 @@ function SelectClassorStreamToEnrollSubject() {
   const [errorMessage, setErrorMessage] = useState("");
   const {auth} = useContext(AuthContext);
   useEffect(() => {
-    api
-      .get(`/result/enroll_students_to_student/`)
+    api.get(`/result/enroll_students_to_student/`)
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -51,10 +50,10 @@ function SelectClassorStreamToEnrollSubject() {
     setTimeout(() => {
       if (formData.stream) {
         navigate(
-          `/enrollstudentstosubject/${formData.class}/${formData.stream}/`
+          "/enrollstudentstosubject/${formData.class}/${formData.stream}/"
         );
       } else {
-        navigate(`/enrollstudentstosubjectclass/${formData.class}/`);
+        navigate("/enrollstudentstosubjectclass/${formData.class}/");
       }
     }, 500);
   };

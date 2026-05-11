@@ -60,6 +60,7 @@ import Register from "./components/Register";
 import PasswordReset from "./components/ForgotPassword";
 import ResetPasswordConfirm from "./components/ResetPasswordConfirm";
 import VerifyEmail from "./components/VerifyEmail";
+import ResendVerificationEmail from "./components/ResendVerificationEmail";
 function App() {
   return (
     <AuthProvider>
@@ -69,6 +70,7 @@ function App() {
         <Route path="/register" element={<Register/>}/>
         <Route path="/forgot-password" element={<PasswordReset/>}/>
         <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordConfirm />}/>
+        <Route path="/resend-verification" element={<ResendVerificationEmail />}/>
         <Route path="/verify-email/:uidb64/:token" element={<VerifyEmail />} />
         <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
         <Route path="/change-password" element={<PrivateRoute><ChangePassword/></PrivateRoute>}/>

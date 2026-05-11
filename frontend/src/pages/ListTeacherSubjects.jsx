@@ -3,12 +3,16 @@ import {Link} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext"
-
+import useRoles from "../components/useRoles";
 
 function ListTeacherSubjects(){
     const [teachersubject, setTeacherSubject] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+        isTeacher
+    } = useRoles();
     useEffect(() => {
         api.get(`/teacher/list_teachersubject/`)
         .then(res => {
@@ -45,11 +49,13 @@ function ListTeacherSubjects(){
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> teachers</h2>
+                {isAdmin && (
                 <Link to="/addteachersubject/">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add teacher subject
                     </button>
                 </Link>
+                )}
             </div>
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -59,8 +65,8 @@ function ListTeacherSubjects(){
                         <th>subject</th>
                         <th>class</th>
                         <th>stream</th>
-                        <th>Update</th>
-                        <th> Delete </th>
+                        {isAdmin &&<th>Update</th>}
+                        {isAdmin &&<th> Delete </th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -72,14 +78,14 @@ function ListTeacherSubjects(){
                         <td>{teacher.class}</td>
                         <td>{teacher.stream}</td>
 
-                        <td>
+                        {isAdmin && (<td>
                           <Link to={`/teacher/updateteachersubject/${teacher.id}/`}>
                             <button style={{ marginRight: '5px', cursor: 'pointer' }}>
                               Edit
                             </button>
                           </Link>
-                        </td>
-
+                        </td>)}
+                        {isAdmin && (
                         <td>
                           <button
                             onClick={() => handleDelete(teacher.id)}
@@ -93,7 +99,7 @@ function ListTeacherSubjects(){
                           >
                             Delete
                           </button>
-                        </td>
+                        </td>)}
                       </tr>
                     ))
                   ) : (

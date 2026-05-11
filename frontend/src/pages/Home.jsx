@@ -12,45 +12,136 @@ import {
   FaEdit,
   FaChartBar,
   FaFileAlt,
-  FaTrophy,
   FaCog,
-} from "react-icons/fa";
+} 
+from "react-icons/fa";
+import useRoles from "../components/useRoles";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Home() {
-  const cards = [
-    { title: "Classes", icon: <FaUserGraduate />, path: "/Classes" },
-    { title: "Parents", icon: <FaUsers />, path: "/parents" },
-    { title: "Teachers", icon: <FaChalkboardTeacher />, path: "/teachers" },
-    { title: "Events", icon: <FaCalendarAlt />, path: "/events" },
-    { title: "Take Attendance", icon: <FaClipboardCheck />, path: "/take-attendance" },
-    { title: "View Attendance", icon: <FaEye />, path: "/view-attendance" },
-    { title: "Enter Result", icon: <FaPenFancy />, path: "/enter-result" },
-    { title: "Update Results", icon: <FaEdit />, path: "/update-results" },
-    { title: "Subject Ranking", icon: <FaChartBar />, path: "/subject-ranking" },
-    { title: "Results Per Class", icon: <FaFileAlt />, path: "/results-per-class" },
-    { title: "Setting", icon: <FaCog />, path: "/settings" },
-  ];
+
   const { auth } = useContext(AuthContext);
+
+  // permissions
+   const {
+        isAdmin,
+        isTeacher,
+        isParent,
+    } = useRoles();
+
+  const cards = [
+
+    // CLASSES
+    (isAdmin || isTeacher || isParent) && {
+      title: "Classes",
+      icon: <FaUserGraduate />,
+      path: "/Classes",
+    },
+
+    // PARENTS
+    isAdmin && {
+      title: "Parents",
+      icon: <FaUsers />,
+      path: "/parents",
+    },
+
+    // TEACHERS
+    (isAdmin || isTeacher) && {
+      title: "Teachers",
+      icon: <FaChalkboardTeacher />,
+      path: "/teachers",
+    },
+
+    // EVENTS
+    (isAdmin || isTeacher || isParent) && {
+      title: "Events",
+      icon: <FaCalendarAlt />,
+      path: "/events",
+    },
+
+    // TAKE ATTENDANCE
+    isTeacher && {
+      title: "Take Attendance",
+      icon: <FaClipboardCheck />,
+      path: "/take-attendance",
+    },
+
+    // VIEW ATTENDANCE
+    (isAdmin || isTeacher || isParent) && {
+      title: "View Attendance",
+      icon: <FaEye />,
+      path: "/view-attendance",
+    },
+
+    // ENTER RESULT
+    isTeacher && {
+      title: "Enter Result",
+      icon: <FaPenFancy />,
+      path: "/enter-result",
+    },
+
+    // UPDATE RESULTS
+    isTeacher && {
+      title: "Update Results",
+      icon: <FaEdit />,
+      path: "/update-results",
+    },
+
+    // SUBJECT RANKING
+    (isAdmin || isTeacher || isParent) && {
+      title: "Subject Ranking",
+      icon: <FaChartBar />,
+      path: "/subject-ranking",
+    },
+
+    // RESULTS PER CLASS
+    (isAdmin || isTeacher || isParent) && {
+      title: "Results Per Class",
+      icon: <FaFileAlt />,
+      path: "/results-per-class",
+    },
+
+    // SETTINGS
+    (isAdmin || isTeacher) && {
+      title: "Setting",
+      icon: <FaCog />,
+      path: "/settings",
+    },
+
+  ].filter(Boolean); // remove false items
+
   return (
     <div className="home-container">
-      <Navbar 
+
+      <Navbar
         user={auth.user}
         onLogout={() => {
           localStorage.clear();
           window.location.href = "/login";
-        }} 
+        }}
       />
+
       <div className="card-grid">
+
         {cards.map((card, index) => (
-          <Link to={card.path} className="card-link" key={index}>
+          <Link
+            to={card.path}
+            className="card-link"
+            key={index}
+          >
             <div className="dashboard-card">
-              <div className="card-icon">{card.icon}</div>
+
+              <div className="card-icon">
+                {card.icon}
+              </div>
+
               <h3>{card.title}</h3>
+
             </div>
           </Link>
         ))}
+
       </div>
     </div>
   );

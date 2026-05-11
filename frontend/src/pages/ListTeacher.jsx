@@ -1,13 +1,16 @@
-import React ,{ useState, useEffect} from 'react';
+import { useState, useEffect, useContext} from 'react';
 import {Link} from 'react-router-dom';
 import api from "../components/api";
 import Navbar from "../components/NavBar";
 import {AuthContext} from "../context/AuthContext";
-
+import useRoles from "../components/useRoles";
 function ListTeacher(){
     const [teacher, setTeacher] = useState([]);
     const [loading, setLoading] = useState(true);
     const {auth} = useContext(AuthContext);
+    const {
+        isAdmin,
+    } = useRoles();
     useEffect(() => {
         api.get(`/teacher/list_teacher/`)
         .then(res => {
@@ -44,11 +47,13 @@ function ListTeacher(){
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2> teachers</h2>
+                {isAdmin &&(
                 <Link to="/addteacher">
                     <button style={{ padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         + Add teacher
                     </button>
                 </Link>
+                )}
             </div>
 
             <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -58,8 +63,8 @@ function ListTeacher(){
                         <th>Gender</th>
                         <th>Date of Appointment</th>
                         <th>Designation</th>
-                        <th>Update</th>
-                        <th> Delete </th>
+                       { isAdmin &&<th>Update</th>}
+                        {isAdmin && <th> Delete </th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -70,10 +75,11 @@ function ListTeacher(){
                                 <td>{teacher.Gender}</td>
                                 <td>{teacher.date_of_appointment}</td>
                                 <td>{teacher.Designation}</td>
-                                <td> <Link to={`/teacher/updateteacher/${teacher.id}/`}>
+                               {isAdmin &&( <td> <Link to={`/teacher/updateteacher/${teacher.id}/`}>
                                         <button style={{ marginRight: '5px', cursor: 'pointer' }}>Edit</button>
                                     </Link>
-                                </td>
+                                </td>)}
+                               {isAdmin &&(
                                 <td>
                                    
                                     <button 
@@ -83,6 +89,7 @@ function ListTeacher(){
                                         Delete
                                     </button>
                                 </td>
+                                )}
                             </tr>
                         ))
                     ) : (
